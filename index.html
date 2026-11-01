@@ -6,240 +6,274 @@
 <title>Viki Football</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  user-select:none;
-  touch-action:none;
+* {
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-body{
-  overflow:hidden;
-  background:#17221a;
-  font-family:Arial,sans-serif;
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #18251d;
+  font-family: Arial, sans-serif;
+  touch-action: none;
 }
 
-#game{
-  position:relative;
-  width:100vw;
-  height:100vh;
-  overflow:hidden;
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   background:
-    linear-gradient(#76b852 0 25%,#5d9f43 25% 100%);
+    radial-gradient(circle at 20% 20%, #6da85c 0 5%, transparent 6%),
+    radial-gradient(circle at 80% 30%, #5e9651 0 4%, transparent 5%),
+    linear-gradient(#76b965 0 100%);
 }
 
 /* Hintergrund */
-.tree{
-  position:absolute;
-  width:45px;
-  height:45px;
-  background:#276b35;
-  border-radius:50%;
-  box-shadow:0 20px 0 -8px #68452c;
+.tree {
+  position: absolute;
+  width: 55px;
+  height: 80px;
+  background: #315d32;
+  border-radius: 50%;
+  opacity: .55;
 }
 
-.t1{left:3%;top:8%}
-.t2{right:5%;top:12%}
-.t3{left:8%;bottom:5%}
-.t4{right:9%;bottom:7%}
+.tree::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 35px;
+  background: #694b2b;
+  left: 18px;
+  top: 55px;
+}
+
+.t1 { left: 4%; top: 8%; }
+.t2 { right: 5%; top: 12%; }
+.t3 { left: 7%; bottom: 8%; }
+.t4 { right: 8%; bottom: 10%; }
 
 /* Spielfeld */
-#field{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:min(94vw,1100px);
-  height:min(78vh,650px);
-  background:#42a94b;
-  border:5px solid white;
-  border-radius:8px;
-  overflow:hidden;
+#field {
+  position: absolute;
+  left: 5%;
+  top: 7%;
+  width: 90%;
+  height: 78%;
+  border: 5px solid white;
+  border-radius: 12px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.04) 0px,
+      rgba(255,255,255,.04) 70px,
+      rgba(0,0,0,.03) 70px,
+      rgba(0,0,0,.03) 140px
+    );
 }
 
-/* Linien */
-.line{
-  position:absolute;
-  background:rgba(255,255,255,.85);
+/* Mittellinie */
+#field::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: rgba(255,255,255,.9);
+  transform: translateX(-50%);
 }
 
-.midline{
-  width:4px;
-  height:100%;
-  left:50%;
-  top:0;
-  transform:translateX(-50%);
+/* Mittelkreis */
+#field::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 110px;
+  height: 110px;
+  border: 4px solid rgba(255,255,255,.9);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
 }
-
-.circle{
-  position:absolute;
-  width:150px;
-  height:150px;
-  border:4px solid rgba(255,255,255,.85);
-  border-radius:50%;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-}
-
-.center{
-  position:absolute;
-  width:14px;
-  height:14px;
-  background:white;
-  border-radius:50%;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-}
-
-/* Strafräume */
-.penalty{
-  position:absolute;
-  width:120px;
-  height:300px;
-  top:50%;
-  transform:translateY(-50%);
-  border:4px solid white;
-}
-
-.leftPenalty{left:-4px}
-.rightPenalty{right:-4px}
 
 /* Tore */
-.goal{
-  position:absolute;
-  top:50%;
-  width:34px;
-  height:170px;
-  transform:translateY(-50%);
-  background:rgba(240,240,240,.35);
-  border:5px solid white;
-  z-index:2;
+.goal {
+  position: absolute;
+  top: 37%;
+  width: 65px;
+  height: 26%;
+  border: 4px solid white;
+  background: rgba(255,255,255,.08);
+  z-index: 3;
 }
 
-.leftGoal{left:-36px}
-.rightGoal{right:-36px}
+#leftGoal {
+  left: -4px;
+  border-left: 0;
+}
+
+#rightGoal {
+  right: -4px;
+  border-right: 0;
+}
 
 /* Pfosten */
-.post{
-  position:absolute;
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:#eee;
-  border:2px solid #aaa;
-  z-index:10;
+.post {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: white;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 1px 4px #333;
 }
 
-.leftPost1{left:-10px;top:calc(50% - 90px)}
-.leftPost2{left:-10px;top:calc(50% + 76px)}
-.rightPost1{right:-10px;top:calc(50% - 90px)}
-.rightPost2{right:-10px;top:calc(50% + 76px)}
+#post1 { left: -9px; top: 37%; }
+#post2 { left: -9px; top: 63%; }
+#post3 { right: -9px; top: 37%; }
+#post4 { right: -9px; top: 63%; }
 
-/* Latte nur Deko */
-.crossbar{
-  position:absolute;
-  width:18px;
-  height:185px;
-  border:5px solid #eee;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:3;
+/* Latte – nur Deko */
+.crossbar {
+  position: absolute;
+  width: 8px;
+  height: 4px;
+  background: white;
+  z-index: 9;
 }
 
-.leftCross{left:-13px}
-.rightCross{right:-13px}
+#cross1 {
+  left: -5px;
+  top: 37%;
+  width: 70px;
+}
+
+#cross2 {
+  right: -5px;
+  top: 37%;
+  width: 70px;
+}
 
 /* Spieler */
-.player{
-  position:absolute;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  z-index:20;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  border:3px solid white;
+.player {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  z-index: 20;
+  border: 3px solid white;
+  box-shadow: 0 3px 7px rgba(0,0,0,.35);
 }
 
-#viki{
-  background:#2478ff;
-  box-shadow:0 3px 8px #1850aa;
+#player {
+  background: #3478ff;
 }
 
-#bot{
-  background:#e63232;
-  box-shadow:0 3px 8px #9c1d1d;
+#bot {
+  background: #ef4545;
+}
+
+/* Namen */
+.name {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px #333;
+}
+
+/* Leben */
+.hp {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translate(-50%,-100%);
+  width: 55px;
+  height: 7px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.hpbar {
+  width: 100%;
+  height: 100%;
+  background: #35df57;
 }
 
 /* Ball */
-#ball{
-  position:absolute;
-  width:22px;
-  height:22px;
-  background:white;
-  border:2px solid #222;
-  border-radius:50%;
-  z-index:25;
-  box-shadow:0 2px 4px #333;
+#ball {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid #222;
+  border-radius: 50%;
+  z-index: 25;
+  box-shadow: 0 2px 4px rgba(0,0,0,.35);
 }
 
 /* Joystick */
-#joystick{
-  position:fixed;
-  left:25px;
-  bottom:25px;
-  width:125px;
-  height:125px;
-  border-radius:50%;
-  background:rgba(255,255,255,.18);
-  border:3px solid rgba(255,255,255,.5);
-  z-index:100;
+#joystick {
+  position: absolute;
+  left: 25px;
+  bottom: 25px;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.20);
+  border: 3px solid rgba(255,255,255,.45);
+  z-index: 100;
 }
 
-#stick{
-  position:absolute;
-  width:55px;
-  height:55px;
-  left:35px;
-  top:35px;
-  border-radius:50%;
-  background:rgba(255,255,255,.8);
-  box-shadow:0 3px 8px #333;
+#stick {
+  position: absolute;
+  left: 37px;
+  top: 37px;
+  width: 51px;
+  height: 51px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 3px 8px rgba(0,0,0,.3);
 }
 
 /* Schuss */
-#shoot{
-  position:fixed;
-  right:35px;
-  bottom:40px;
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  background:#ffb000;
-  border:5px solid white;
-  font-size:20px;
-  font-weight:bold;
-  z-index:100;
-  box-shadow:0 4px 10px #333;
+#shoot {
+  position: absolute;
+  right: 30px;
+  bottom: 35px;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.8);
+  border: 4px solid rgba(0,0,0,.2);
+  z-index: 100;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-#score{
-  position:fixed;
-  top:15px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.55);
-  color:white;
-  padding:8px 22px;
-  border-radius:15px;
-  font-size:24px;
-  font-weight:bold;
-  z-index:100;
+/* Score */
+#score {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.45);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  z-index: 200;
 }
 </style>
 </head>
@@ -253,30 +287,31 @@ body{
   <div class="tree t3"></div>
   <div class="tree t4"></div>
 
-  <div id="score">0 : 0</div>
+  <div id="score">VIKI 0 : 0 BOT</div>
 
   <div id="field">
 
-    <div class="line midline"></div>
-    <div class="circle"></div>
-    <div class="center"></div>
+    <div id="leftGoal" class="goal"></div>
+    <div id="rightGoal" class="goal"></div>
 
-    <div class="penalty leftPenalty"></div>
-    <div class="penalty rightPenalty"></div>
+    <div id="post1" class="post"></div>
+    <div id="post2" class="post"></div>
+    <div id="post3" class="post"></div>
+    <div id="post4" class="post"></div>
 
-    <div class="goal leftGoal"></div>
-    <div class="goal rightGoal"></div>
+    <div id="cross1" class="crossbar"></div>
+    <div id="cross2" class="crossbar"></div>
 
-    <div class="crossbar leftCross"></div>
-    <div class="crossbar rightCross"></div>
+    <div id="player" class="player">
+      <div class="name">VIKI</div>
+      <div class="hp"><div id="playerHP" class="hpbar"></div></div>
+    </div>
 
-    <div class="post leftPost1"></div>
-    <div class="post leftPost2"></div>
-    <div class="post rightPost1"></div>
-    <div class="post rightPost2"></div>
+    <div id="bot" class="player">
+      <div class="name">BOT</div>
+      <div class="hp"><div id="botHP" class="hpbar"></div></div>
+    </div>
 
-    <div id="viki" class="player">😎</div>
-    <div id="bot" class="player">🤖</div>
     <div id="ball"></div>
 
   </div>
@@ -285,313 +320,337 @@ body{
     <div id="stick"></div>
   </div>
 
-  <button id="shoot">KICK</button>
+  <button id="shoot">⚽</button>
 
 </div>
 
 <script>
 const field = document.getElementById("field");
-const viki = document.getElementById("viki");
+const player = document.getElementById("player");
 const bot = document.getElementById("bot");
 const ball = document.getElementById("ball");
 const joystick = document.getElementById("joystick");
 const stick = document.getElementById("stick");
 const shoot = document.getElementById("shoot");
-const scoreText = document.getElementById("score");
 
-let fieldW, fieldH;
+let fw = 0;
+let fh = 0;
 
-let vikiPos = {x:150,y:300};
-let botPos  = {x:750,y:300};
-let ballPos = {x:550,y:300};
+let p = {x: 120, y: 250};
+let b = {x: 500, y: 250};
 
-let ballVel = {x:0,y:0};
+let ballPos = {x: 320, y: 250};
+let ballVel = {x: 0, y: 0};
 
-let scoreViki = 0;
+let scorePlayer = 0;
 let scoreBot = 0;
 
 let joyX = 0;
 let joyY = 0;
-let shooting = false;
+let touching = false;
 
-function resize(){
-  fieldW = field.clientWidth;
-  fieldH = field.clientHeight;
+const speed = 4.2;
+const botSpeed = 2.1;
+const ballFriction = 0.985;
 
-  vikiPos.x = Math.min(vikiPos.x,fieldW-45);
-  vikiPos.y = Math.min(vikiPos.y,fieldH-45);
+function resize() {
+  fw = field.clientWidth;
+  fh = field.clientHeight;
 
-  botPos.x = Math.min(botPos.x,fieldW-45);
-  botPos.y = Math.min(botPos.y,fieldH-45);
+  p.x = Math.min(Math.max(p.x, 25), fw - 25);
+  p.y = Math.min(Math.max(p.y, 25), fh - 25);
+  b.x = Math.min(Math.max(b.x, 25), fw - 25);
+  b.y = Math.min(Math.max(b.y, 25), fh - 25);
 }
 
-window.addEventListener("resize",resize);
+window.addEventListener("resize", resize);
 resize();
 
-function clamp(v,min,max){
-  return Math.max(min,Math.min(max,v));
+function draw() {
+  player.style.left = (p.x - 21) + "px";
+  player.style.top = (p.y - 21) + "px";
+
+  bot.style.left = (b.x - 21) + "px";
+  bot.style.top = (b.y - 21) + "px";
+
+  ball.style.left = (ballPos.x - 10) + "px";
+  ball.style.top = (ballPos.y - 10) + "px";
 }
 
-function distance(a,b){
-  return Math.hypot(a.x-b.x,a.y-b.y);
+function clampPlayer() {
+  p.x = Math.max(25, Math.min(fw - 25, p.x));
+  p.y = Math.max(25, Math.min(fh - 25, p.y));
 }
 
-/* JOYSTICK */
+function movePlayer() {
+  p.x += joyX * speed;
+  p.y += joyY * speed;
+  clampPlayer();
+}
 
-let dragging=false;
+function moveBot() {
 
-function joystickMove(clientX,clientY){
+  let dx = ballPos.x - b.x;
+  let dy = ballPos.y - b.y;
 
-  const r=joystick.getBoundingClientRect();
+  let dist = Math.hypot(dx,dy);
 
-  let x=clientX-(r.left+r.width/2);
-  let y=clientY-(r.top+r.height/2);
-
-  const max=35;
-  const d=Math.hypot(x,y);
-
-  if(d>max){
-    x=x/d*max;
-    y=y/d*max;
+  if (dist > 35) {
+    b.x += (dx / dist) * botSpeed;
+    b.y += (dy / dist) * botSpeed;
   }
 
-  stick.style.left=(35+x)+"px";
-  stick.style.top=(35+y)+"px";
+  b.x = Math.max(25, Math.min(fw - 25, b.x));
+  b.y = Math.max(25, Math.min(fh - 25, b.y));
 
-  joyX=x/max;
-  joyY=y/max;
-}
+  /* Bot soll Ball nicht in die Ecke schieben */
+  if (
+    ballPos.x < 28 ||
+    ballPos.x > fw - 28 ||
+    ballPos.y < 28 ||
+    ballPos.y > fh - 28
+  ) {
+    ballVel.x *= -1.4;
+    ballVel.y *= -1.4;
 
-joystick.addEventListener("pointerdown",e=>{
-  dragging=true;
-  joystick.setPointerCapture(e.pointerId);
-  joystickMove(e.clientX,e.clientY);
-});
-
-joystick.addEventListener("pointermove",e=>{
-  if(dragging) joystickMove(e.clientX,e.clientY);
-});
-
-joystick.addEventListener("pointerup",()=>{
-  dragging=false;
-  joyX=0;
-  joyY=0;
-  stick.style.left="35px";
-  stick.style.top="35px";
-});
-
-/* SCHIESSEN */
-
-shoot.addEventListener("pointerdown",()=>{
-  kickBall();
-});
-
-function kickBall(){
-
-  const dx=ballPos.x-(vikiPos.x+21);
-  const dy=ballPos.y-(vikiPos.y+21);
-
-  const d=Math.hypot(dx,dy);
-
-  if(d<65){
-
-    const nx=dx/(d||1);
-    const ny=dy/(d||1);
-
-    ballVel.x=nx*9;
-    ballVel.y=ny*9;
+    ballPos.x = Math.max(32, Math.min(fw - 32, ballPos.x));
+    ballPos.y = Math.max(32, Math.min(fh - 32, ballPos.y));
   }
 }
 
-/* VIKI */
+function updateBall() {
 
-function updateViki(){
+  ballPos.x += ballVel.x;
+  ballPos.y += ballVel.y;
 
-  const speed=4.5;
-
-  vikiPos.x+=joyX*speed;
-  vikiPos.y+=joyY*speed;
-
-  vikiPos.x=clamp(vikiPos.x,0,fieldW-42);
-  vikiPos.y=clamp(vikiPos.y,0,fieldH-42);
-}
-
-/* BOT KI */
-
-function updateBot(){
-
-  const dx=ballPos.x-(botPos.x+21);
-  const dy=ballPos.y-(botPos.y+21);
-
-  const d=Math.hypot(dx,dy);
-
-  if(d>35){
-
-    const speed=2.4;
-
-    botPos.x+=dx/d*speed;
-    botPos.y+=dy/d*speed;
-  }
-
-  botPos.x=clamp(botPos.x,25,fieldW-67);
-  botPos.y=clamp(botPos.y,25,fieldH-67);
-
-  /* Bot schießt Richtung Viki */
-  if(d<48){
-
-    const targetX=vikiPos.x+21;
-    const targetY=vikiPos.y+21;
-
-    const bx=targetX-ballPos.x;
-    const by=targetY-ballPos.y;
-    const bd=Math.hypot(bx,by)||1;
-
-    ballVel.x=bx/bd*5;
-    ballVel.y=by/bd*5;
-  }
-}
-
-/* BALL */
-
-function updateBall(){
-
-  ballPos.x+=ballVel.x;
-  ballPos.y+=ballVel.y;
-
-  ballVel.x*=0.985;
-  ballVel.y*=0.985;
-
-  const r=11;
+  ballVel.x *= ballFriction;
+  ballVel.y *= ballFriction;
 
   /* obere/untere Bande */
-
-  if(ballPos.y<r){
-    ballPos.y=r;
-    ballVel.y=Math.abs(ballVel.y);
+  if (ballPos.y < 10) {
+    ballPos.y = 10;
+    ballVel.y = Math.abs(ballVel.y);
   }
 
-  if(ballPos.y>fieldH-r){
-    ballPos.y=fieldH-r;
-    ballVel.y=-Math.abs(ballVel.y);
+  if (ballPos.y > fh - 10) {
+    ballPos.y = fh - 10;
+    ballVel.y = -Math.abs(ballVel.y);
   }
 
-  /* Seiten + Pfosten */
+  /* Pfosten */
+  const posts = [
+    {x: 4, y: fh*.37},
+    {x: 4, y: fh*.63},
+    {x: fw-4, y: fh*.37},
+    {x: fw-4, y: fh*.63}
+  ];
 
-  if(ballPos.x<r){
+  for (const post of posts) {
 
-    const goalTop=fieldH/2-85;
-    const goalBottom=fieldH/2+85;
+    let dx = ballPos.x - post.x;
+    let dy = ballPos.y - post.y;
+    let d = Math.hypot(dx,dy);
 
-    if(ballPos.y<goalTop || ballPos.y>goalBottom){
-      ballPos.x=r;
-      ballVel.x=Math.abs(ballVel.x);
+    if (d < 18) {
+
+      if (d === 0) d = 1;
+
+      ballPos.x = post.x + dx/d * 19;
+      ballPos.y = post.y + dy/d * 19;
+
+      let dot = ballVel.x*(dx/d) + ballVel.y*(dy/d);
+
+      ballVel.x -= 2 * dot * (dx/d);
+      ballVel.y -= 2 * dot * (dy/d);
+
+      ballVel.x *= 1.05;
+      ballVel.y *= 1.05;
     }
   }
 
-  if(ballPos.x>fieldW-r){
+  /* Seitenwand – aber Toröffnung bleibt offen */
+  const inGoalHeight =
+    ballPos.y > fh*.37 &&
+    ballPos.y < fh*.63;
 
-    const goalTop=fieldH/2-85;
-    const goalBottom=fieldH/2+85;
-
-    if(ballPos.y<goalTop || ballPos.y>goalBottom){
-      ballPos.x=fieldW-r;
-      ballVel.x=-Math.abs(ballVel.x);
-    }
+  if (!inGoalHeight && ballPos.x < 10) {
+    ballPos.x = 10;
+    ballVel.x = Math.abs(ballVel.x);
   }
 
-  /* Tor links */
+  if (!inGoalHeight && ballPos.x > fw-10) {
+    ballPos.x = fw-10;
+    ballVel.x = -Math.abs(ballVel.x);
+  }
 
-  if(ballPos.x<-5 &&
-     ballPos.y>fieldH/2-85 &&
-     ballPos.y<fieldH/2+85){
-
+  /* Tor */
+  if (ballPos.x < -10) {
     scoreBot++;
     resetBall();
   }
 
-  /* Tor rechts */
-
-  if(ballPos.x>fieldW+5 &&
-     ballPos.y>fieldH/2-85 &&
-     ballPos.y<fieldH/2+85){
-
-    scoreViki++;
+  if (ballPos.x > fw+10) {
+    scorePlayer++;
     resetBall();
   }
+}
 
-  /* Spieler schubst Ball */
+function kick(fromX, fromY, power) {
 
-  const vc={
-    x:vikiPos.x+21,
-    y:vikiPos.y+21
-  };
+  let dx = ballPos.x - fromX;
+  let dy = ballPos.y - fromY;
+  let d = Math.hypot(dx,dy);
 
-  if(distance(vc,ballPos)<34){
+  if (d < 65) {
 
-    const dx=ballPos.x-vc.x;
-    const dy=ballPos.y-vc.y;
-    const d=Math.hypot(dx,dy)||1;
+    if (d === 0) d = 1;
 
-    ballVel.x+=dx/d*0.7;
-    ballVel.y+=dy/d*0.7;
-  }
-
-  /* Bot berührt Ball */
-
-  const bc={
-    x:botPos.x+21,
-    y:botPos.y+21
-  };
-
-  if(distance(bc,ballPos)<34){
-
-    const dx=ballPos.x-bc.x;
-    const dy=ballPos.y-bc.y;
-    const d=Math.hypot(dx,dy)||1;
-
-    ballVel.x+=dx/d*0.5;
-    ballVel.y+=dy/d*0.5;
+    ballVel.x = (dx/d) * power;
+    ballVel.y = (dy/d) * power;
   }
 }
 
-function resetBall(){
-
-  ballPos.x=fieldW/2;
-  ballPos.y=fieldH/2;
-
-  ballVel.x=0;
-  ballVel.y=0;
-
-  scoreText.textContent=scoreViki+" : "+scoreBot;
+function playerKick() {
+  kick(p.x,p.y,10);
 }
 
-/* ZEICHNEN */
+function botKick() {
 
-function draw(){
+  let dx = ballPos.x - b.x;
+  let dy = ballPos.y - b.y;
+  let d = Math.hypot(dx,dy);
 
-  viki.style.left=vikiPos.x+"px";
-  viki.style.top=vikiPos.y+"px";
+  if (d < 45) {
 
-  bot.style.left=botPos.x+"px";
-  bot.style.top=botPos.y+"px";
+    /* Bot schießt Richtung linkes Tor */
+    let targetX = 0;
+    let targetY = fh/2;
 
-  ball.style.left=(ballPos.x-11)+"px";
-  ball.style.top=(ballPos.y-11)+"px";
+    let tx = targetX-ballPos.x;
+    let ty = targetY-ballPos.y;
+    let td = Math.hypot(tx,ty);
+
+    ballVel.x = (tx/td)*7;
+    ballVel.y = (ty/td)*7;
+  }
 }
 
-/* GAME LOOP */
+function resetBall() {
 
-function loop(){
+  ballPos.x = fw/2;
+  ballPos.y = fh/2;
 
-  updateViki();
-  updateBot();
+  ballVel.x = 0;
+  ballVel.y = 0;
+
+  p.x = fw*.25;
+  p.y = fh*.5;
+
+  b.x = fw*.75;
+  b.y = fh*.5;
+
+  document.getElementById("score").textContent =
+    "VIKI " + scorePlayer + " : " + scoreBot + " BOT";
+}
+
+/* Joystick */
+
+function joystickMove(clientX, clientY) {
+
+  const r = joystick.getBoundingClientRect();
+
+  let cx = r.left + r.width/2;
+  let cy = r.top + r.height/2;
+
+  let dx = clientX-cx;
+  let dy = clientY-cy;
+
+  let max = 37;
+  let d = Math.hypot(dx,dy);
+
+  if (d > max) {
+    dx = dx/d*max;
+    dy = dy/d*max;
+  }
+
+  joyX = dx/max;
+  joyY = dy/max;
+
+  stick.style.left = (37+dx) + "px";
+  stick.style.top = (37+dy) + "px";
+}
+
+function joystickReset() {
+
+  touching = false;
+
+  joyX = 0;
+  joyY = 0;
+
+  stick.style.left = "37px";
+  stick.style.top = "37px";
+}
+
+joystick.addEventListener("pointerdown", e => {
+  touching = true;
+  joystickMove(e.clientX,e.clientY);
+});
+
+joystick.addEventListener("pointermove", e => {
+  if (touching) joystickMove(e.clientX,e.clientY);
+});
+
+joystick.addEventListener("pointerup", joystickReset);
+joystick.addEventListener("pointercancel", joystickReset);
+joystick.addEventListener("pointerleave", e => {
+  if (touching) joystickMove(e.clientX,e.clientY);
+});
+
+shoot.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  playerKick();
+});
+
+/* Hauptschleife */
+
+function loop() {
+
+  movePlayer();
+  moveBot();
+
   updateBall();
+
+  /* Ballkontakt mit Viki */
+  let dp = Math.hypot(ballPos.x-p.x,ballPos.y-p.y);
+
+  if (dp < 32) {
+
+    let dx = ballPos.x-p.x;
+    let dy = ballPos.y-p.y;
+    let d = Math.max(1,Math.hypot(dx,dy));
+
+    ballPos.x = p.x + dx/d*33;
+    ballPos.y = p.y + dy/d*33;
+
+    if (Math.abs(joyX)+Math.abs(joyY) > .1) {
+      ballVel.x = joyX*4;
+      ballVel.y = joyY*4;
+    }
+  }
+
+  /* Ballkontakt mit Bot */
+  let db = Math.hypot(ballPos.x-b.x,ballPos.y-b.y);
+
+  if (db < 32) {
+    botKick();
+  }
+
   draw();
 
   requestAnimationFrame(loop);
 }
 
-resetBall();
+draw();
 loop();
 </script>
 
