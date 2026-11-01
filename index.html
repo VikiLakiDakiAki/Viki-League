@@ -2,198 +2,226 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
 <title>VIKI LEAGUE</title>
 
 <style>
 *{
-    box-sizing:border-box;
+  box-sizing:border-box;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 
-body{
-    margin:0;
-    overflow:hidden;
-    background:#111;
-    font-family:Arial,sans-serif;
-    user-select:none;
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  position:fixed;
+  touch-action:none;
+  background:#101827;
+  font-family:Arial,sans-serif;
+}
+
+button,input{
+  touch-action:none;
 }
 
 #menu{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(135deg,#101827,#172554);
-    color:white;
+  position:fixed;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  background:linear-gradient(135deg,#101827,#172554);
 }
 
 #menu h1{
-    font-size:60px;
-    margin:0 0 10px;
-    text-shadow:0 5px 15px #000;
+  margin:0 0 8px;
+  font-size:clamp(42px,9vw,75px);
+  text-shadow:0 5px 15px #000;
 }
 
 #menu p{
-    color:#aaa;
+  color:#aaa;
+  margin:5px;
 }
 
-input{
-    padding:13px;
-    border:0;
-    border-radius:10px;
-    font-size:17px;
-    text-align:center;
-    margin:10px;
+#nameInput{
+  width:220px;
+  padding:14px;
+  margin:15px;
+  border:0;
+  border-radius:12px;
+  font-size:17px;
+  text-align:center;
+  touch-action:auto;
+  -webkit-user-select:text;
+  user-select:text;
 }
 
-button{
-    border:0;
-    border-radius:12px;
-    padding:13px 25px;
-    margin:6px;
-    font-size:17px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.play{
-    background:#22c55e;
-    color:white;
+#play{
+  border:0;
+  border-radius:13px;
+  padding:15px 35px;
+  background:#22c55e;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
 }
 
 #game{
-    display:none;
-    position:absolute;
-    inset:0;
+  display:none;
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  touch-action:none;
 }
 
 canvas{
-    display:block;
-    width:100%;
-    height:100%;
+  display:block;
+  width:100%;
+  height:100%;
+  touch-action:none;
 }
 
 #score{
-    position:absolute;
-    top:12px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#0009;
-    color:white;
-    padding:9px 24px;
-    border-radius:14px;
-    font-size:28px;
-    font-weight:bold;
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:8px 24px;
+  border-radius:14px;
+  background:#0009;
+  color:white;
+  font-size:26px;
+  font-weight:bold;
+  pointer-events:none;
 }
 
 #playerName{
-    position:absolute;
-    top:15px;
-    left:15px;
-    background:#0009;
-    color:white;
-    padding:8px 14px;
-    border-radius:10px;
+  position:absolute;
+  top:12px;
+  left:12px;
+  padding:8px 13px;
+  border-radius:10px;
+  background:#0009;
+  color:white;
+  pointer-events:none;
 }
 
 #back{
-    position:absolute;
-    top:15px;
-    right:15px;
-    background:#0009;
-    color:white;
-}
-
-#boostBox{
-    position:absolute;
-    right:25px;
-    bottom:25px;
-    width:140px;
-    height:48px;
-    background:#0009;
-    border-radius:12px;
-    padding:7px;
-}
-
-#boostText{
-    color:white;
-    font-size:12px;
-    font-weight:bold;
-    text-align:center;
-}
-
-#boostBar{
-    width:100%;
-    height:14px;
-    background:#333;
-    border-radius:8px;
-    overflow:hidden;
-}
-
-#boostFill{
-    width:100%;
-    height:100%;
-    background:#f59e0b;
-}
-
-#boostButton{
-    position:absolute;
-    right:45px;
-    bottom:90px;
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    background:#f59e0b;
-    border:5px solid #ffffff55;
-    color:white;
-    font-size:16px;
-    font-weight:bold;
+  position:absolute;
+  top:10px;
+  right:10px;
+  padding:10px 16px;
+  border:0;
+  border-radius:10px;
+  background:#0009;
+  color:white;
+  font-weight:bold;
+  touch-action:none;
 }
 
 #joystick{
-    position:absolute;
-    left:25px;
-    bottom:25px;
-    width:135px;
-    height:135px;
-    border-radius:50%;
-    background:#ffffff20;
-    border:3px solid #ffffff55;
+  position:absolute;
+  left:25px;
+  bottom:25px;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:#ffffff20;
+  border:3px solid #ffffff55;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none;
 }
 
 #stick{
-    position:absolute;
-    width:55px;
-    height:55px;
-    left:40px;
-    top:40px;
-    border-radius:50%;
-    background:#ffffff88;
+  position:absolute;
+  left:42px;
+  top:42px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:#ffffffaa;
+  pointer-events:none;
 }
 
-#info{
-    position:absolute;
-    left:50%;
-    bottom:8px;
-    transform:translateX(-50%);
-    color:#fff9;
-    font-size:12px;
+#boostButton{
+  position:absolute;
+  right:40px;
+  bottom:90px;
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  border:5px solid #ffffff55;
+  background:#f59e0b;
+  color:white;
+  font-weight:bold;
+  font-size:15px;
+  touch-action:none;
+}
+
+#boostBox{
+  position:absolute;
+  right:25px;
+  bottom:25px;
+  width:140px;
+  padding:7px;
+  border-radius:10px;
+  background:#0009;
+  pointer-events:none;
+}
+
+#boostText{
+  color:white;
+  text-align:center;
+  font-size:12px;
+  font-weight:bold;
+}
+
+#boostBar{
+  height:14px;
+  margin-top:3px;
+  background:#333;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+#boostFill{
+  height:100%;
+  width:100%;
+  background:#f59e0b;
 }
 
 #goalText{
-    position:absolute;
-    top:45%;
-    left:50%;
-    transform:translate(-50%,-50%) scale(.5);
-    color:white;
-    font-size:60px;
-    font-weight:900;
-    text-shadow:0 5px 20px #000;
-    opacity:0;
-    pointer-events:none;
-    transition:.15s;
+  position:absolute;
+  left:50%;
+  top:45%;
+  transform:translate(-50%,-50%) scale(.5);
+  color:white;
+  font-size:clamp(40px,8vw,70px);
+  font-weight:900;
+  text-shadow:0 5px 20px #000;
+  opacity:0;
+  pointer-events:none;
+  transition:.15s;
+}
+
+#info{
+  position:absolute;
+  bottom:5px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#ffffff99;
+  font-size:11px;
+  pointer-events:none;
 }
 </style>
 </head>
@@ -201,1374 +229,835 @@ canvas{
 <body>
 
 <div id="menu">
+  <h1>VIKI LEAGUE</h1>
+  <p>⚽ CAR FOOTBALL</p>
 
-<h1>VIKI LEAGUE</h1>
+  <input id="nameInput"
+         placeholder="Dein Name"
+         autocomplete="off">
 
-<p>⚽ CAR FOOTBALL</p>
-
-<input id="nameInput" placeholder="Dein Name">
-
-<button class="play" onclick="startGame()">
-SPIELEN
-</button>
-
+  <button id="play">SPIELEN</button>
 </div>
-
 
 <div id="game">
 
-<canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-<div id="score">
-🔵 0 : 0 🟠
-</div>
+  <div id="score">🔵 0 : 0 🟠</div>
 
-<div id="playerName">
-Viki
-</div>
+  <div id="playerName">Viki</div>
 
-<button id="back" onclick="backMenu()">
-MENÜ
-</button>
+  <button id="back">MENÜ</button>
 
-<div id="joystick">
-<div id="stick"></div>
-</div>
+  <div id="joystick">
+    <div id="stick"></div>
+  </div>
 
-<button id="boostButton">
-BOOST
-</button>
+  <button id="boostButton">BOOST</button>
 
-<div id="boostBox">
-<div id="boostText">
-BOOST: 100%
-</div>
+  <div id="boostBox">
+    <div id="boostText">BOOST: 100%</div>
+    <div id="boostBar">
+      <div id="boostFill"></div>
+    </div>
+  </div>
 
-<div id="boostBar">
-<div id="boostFill"></div>
-</div>
-</div>
+  <div id="goalText">⚽ TOR! 💥</div>
 
-<div id="goalText">
-⚽ TOR! 💥
-</div>
-
-<div id="info">
-WASD / Pfeile · Joystick · Boost
-</div>
+  <div id="info">Joystick · WASD / Pfeile · Boost</div>
 
 </div>
-
 
 <script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+let W = innerWidth;
+let H = innerHeight;
 
-let W=innerWidth;
-let H=innerHeight;
+function resize(){
+  W = innerWidth;
+  H = innerHeight;
 
-canvas.width=W;
-canvas.height=H;
+  canvas.width = W * devicePixelRatio;
+  canvas.height = H * devicePixelRatio;
 
-window.addEventListener("resize",()=>{
+  canvas.style.width = W + "px";
+  canvas.style.height = H + "px";
 
-    W=innerWidth;
-    H=innerHeight;
+  ctx.setTransform(
+    devicePixelRatio,0,0,devicePixelRatio,0,0
+  );
+}
 
-    canvas.width=W;
-    canvas.height=H;
+resize();
+window.addEventListener("resize",resize);
 
-});
+const menu = document.getElementById("menu");
+const game = document.getElementById("game");
+const play = document.getElementById("play");
+const back = document.getElementById("back");
 
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
 
-/* =========================
-   GAME
-========================= */
+const boostButton = document.getElementById("boostButton");
 
-let gameRunning=false;
+const scoreText = document.getElementById("score");
+const playerName = document.getElementById("playerName");
 
-let blueScore=0;
-let orangeScore=0;
+const boostText = document.getElementById("boostText");
+const boostFill = document.getElementById("boostFill");
+const goalText = document.getElementById("goalText");
 
-let goalLocked=false;
-let goalTimer=null;
+let running = false;
+let blueScore = 0;
+let orangeScore = 0;
 
-let keys={};
+let keys = {};
+let boostPressed = false;
 
-let boostPressed=false;
-let boostAmount=100;
+let joyX = 0;
+let joyY = 0;
+let joyActive = false;
+let joyPointer = null;
 
-let particles=[];
-let goalEffects=[];
+let boost = 100;
+let goalTimer = 0;
 
-const MARGIN=20;
-const RADIUS=45;
-
-
-/* =========================
-   OBJECTS
-========================= */
-
-const player={
-    x:0,
-    y:0,
-    r:27,
-    vx:0,
-    vy:0,
-    color:"#2495ff"
+const player = {
+  x:0,y:0,r:27,
+  vx:0,vy:0
 };
 
-const bot={
-    x:0,
-    y:0,
-    r:27,
-    vx:0,
-    vy:0,
-    color:"#ff8a22",
-    stuckTimer:0
+const bot = {
+  x:0,y:0,r:27,
+  vx:0,vy:0
 };
 
-const ball={
-    x:0,
-    y:0,
-    r:18,
-    vx:0,
-    vy:0
+const ball = {
+  x:0,y:0,r:18,
+  vx:0,vy:0
 };
 
-
-/* =========================
-   INPUT
-========================= */
+/* --------------------
+   TASTATUR
+-------------------- */
 
 window.addEventListener("keydown",e=>{
+  keys[e.key.toLowerCase()] = true;
 
-    keys[e.key.toLowerCase()]=true;
-
-    if(e.code==="Space"){
-        boostPressed=true;
-    }
-
+  if(e.code === "Space"){
+    boostPressed = true;
+    e.preventDefault();
+  }
 });
 
 window.addEventListener("keyup",e=>{
+  keys[e.key.toLowerCase()] = false;
 
-    keys[e.key.toLowerCase()]=false;
-
-    if(e.code==="Space"){
-        boostPressed=false;
-    }
-
+  if(e.code === "Space"){
+    boostPressed = false;
+    e.preventDefault();
+  }
 });
 
-
-/* =========================
+/* --------------------
    JOYSTICK
-========================= */
+-------------------- */
 
-const joystick=document.getElementById("joystick");
-const stick=document.getElementById("stick");
+function moveJoystick(e){
+  if(!joyActive) return;
 
-let joyX=0;
-let joyY=0;
-let joyActive=false;
+  e.preventDefault();
+
+  const rect = joystick.getBoundingClientRect();
+
+  let x =
+    e.clientX -
+    (rect.left + rect.width / 2);
+
+  let y =
+    e.clientY -
+    (rect.top + rect.height / 2);
+
+  const max = 42;
+
+  const distance = Math.hypot(x,y);
+
+  if(distance > max){
+    x = x / distance * max;
+    y = y / distance * max;
+  }
+
+  joyX = x / max;
+  joyY = y / max;
+
+  stick.style.left = (42 + x) + "px";
+  stick.style.top = (42 + y) + "px";
+}
+
+function resetJoystick(){
+  joyActive = false;
+  joyPointer = null;
+
+  joyX = 0;
+  joyY = 0;
+
+  stick.style.left = "42px";
+  stick.style.top = "42px";
+}
 
 joystick.addEventListener("pointerdown",e=>{
+  e.preventDefault();
 
-    joyActive=true;
+  joyActive = true;
+  joyPointer = e.pointerId;
 
-    joystick.setPointerCapture(e.pointerId);
+  joystick.setPointerCapture(e.pointerId);
 
+  moveJoystick(e);
 });
 
 joystick.addEventListener("pointermove",e=>{
+  e.preventDefault();
 
-    if(!joyActive)return;
-
-    const rect=joystick.getBoundingClientRect();
-
-    let x=e.clientX-(rect.left+rect.width/2);
-    let y=e.clientY-(rect.top+rect.height/2);
-
-    const max=42;
-
-    let d=Math.hypot(x,y);
-
-    if(d>max){
-
-        x=x/d*max;
-        y=y/d*max;
-
-    }
-
-    joyX=x/max;
-    joyY=y/max;
-
-    stick.style.left=(40+x)+"px";
-    stick.style.top=(40+y)+"px";
-
+  if(e.pointerId === joyPointer){
+    moveJoystick(e);
+  }
 });
 
-joystick.addEventListener("pointerup",()=>{
+joystick.addEventListener("pointerup",e=>{
+  e.preventDefault();
 
-    joyActive=false;
-
-    joyX=0;
-    joyY=0;
-
-    stick.style.left="40px";
-    stick.style.top="40px";
-
+  if(e.pointerId === joyPointer){
+    resetJoystick();
+  }
 });
 
+joystick.addEventListener("pointercancel",e=>{
+  e.preventDefault();
+  resetJoystick();
+});
 
-/* =========================
+joystick.addEventListener("lostpointercapture",()=>{
+  resetJoystick();
+});
+
+/* --------------------
    BOOST
-========================= */
+-------------------- */
 
-const boostButton=document.getElementById("boostButton");
-
-boostButton.addEventListener("pointerdown",()=>{
-    boostPressed=true;
+boostButton.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  boostPressed = true;
 });
 
-boostButton.addEventListener("pointerup",()=>{
-    boostPressed=false;
+boostButton.addEventListener("pointerup",e=>{
+  e.preventDefault();
+  boostPressed = false;
 });
 
 boostButton.addEventListener("pointercancel",()=>{
-    boostPressed=false;
+  boostPressed = false;
 });
 
-
-/* =========================
+/* --------------------
    START
-========================= */
+-------------------- */
+
+play.addEventListener("click",startGame);
 
 function startGame(){
 
-    document.getElementById("menu").style.display="none";
-    document.getElementById("game").style.display="block";
+  menu.style.display = "none";
+  game.style.display = "block";
 
-    let name=document.getElementById("nameInput").value.trim();
+  const name =
+    document.getElementById("nameInput").value.trim()
+    || "Viki";
 
-    if(!name){
-        name="Viki";
-    }
+  playerName.textContent = name;
 
-    document.getElementById("playerName").textContent=name;
+  blueScore = 0;
+  orangeScore = 0;
 
-    blueScore=0;
-    orangeScore=0;
+  boost = 100;
 
-    boostAmount=100;
+  updateScore();
+  resetPositions();
 
-    goalLocked=false;
+  running = true;
 
-    resetPositions(true);
-
-    gameRunning=true;
-
-    requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 }
 
-
-/* =========================
+/* --------------------
    RESET
-========================= */
+-------------------- */
 
-function resetPositions(first=false){
+function resetPositions(){
 
-    player.x=W*.25;
-    player.y=H*.5;
+  player.x = W * .25;
+  player.y = H * .5;
 
-    player.vx=0;
-    player.vy=0;
+  player.vx = 0;
+  player.vy = 0;
 
+  bot.x = W * .75;
+  bot.y = H * .5;
 
-    bot.x=W*.75;
-    bot.y=H*.5;
+  bot.vx = 0;
+  bot.vy = 0;
 
-    bot.vx=0;
-    bot.vy=0;
+  ball.x = W * .5;
+  ball.y = H * .5;
 
-    bot.stuckTimer=0;
+  const direction =
+    Math.random() < .5 ? -1 : 1;
 
+  const angle =
+    (Math.random() * .8) - .4;
 
-    ball.x=W*.5;
-    ball.y=H*.5;
+  ball.vx =
+    Math.cos(angle) * 2.2 * direction;
 
-
-    /*
-       Unterschiedlicher Anstoß
-    */
-
-    let direction=Math.random()<.5 ? -1 : 1;
-
-    let angle=(Math.random()*.9)-.45;
-
-    let speed=first ? 1.25 : 1.5+Math.random()*.5;
-
-    ball.vx=Math.cos(angle)*speed*direction;
-
-    ball.vy=Math.sin(angle)*speed;
-
-
-    /*
-       Niemals komplett gerade
-    */
-
-    if(Math.abs(ball.vy)<.25){
-
-        ball.vy=Math.random()<.5 ? -.45 : .45;
-
-    }
-
+  ball.vy =
+    Math.sin(angle) * 2.2;
 }
 
-
-/* =========================
+/* --------------------
    PLAYER
-========================= */
+-------------------- */
 
 function updatePlayer(){
 
-    let dx=0;
-    let dy=0;
+  let dx = 0;
+  let dy = 0;
 
-    if(keys["w"]||keys["arrowup"])dy--;
+  if(keys["w"] || keys["arrowup"])
+    dy -= 1;
 
-    if(keys["s"]||keys["arrowdown"])dy++;
+  if(keys["s"] || keys["arrowdown"])
+    dy += 1;
 
-    if(keys["a"]||keys["arrowleft"])dx--;
+  if(keys["a"] || keys["arrowleft"])
+    dx -= 1;
 
-    if(keys["d"]||keys["arrowright"])dx++;
+  if(keys["d"] || keys["arrowright"])
+    dx += 1;
 
-    dx+=joyX;
-    dy+=joyY;
+  dx += joyX;
+  dy += joyY;
 
-    let len=Math.hypot(dx,dy);
+  const length = Math.hypot(dx,dy);
 
-    if(len>1){
+  if(length > 1){
+    dx /= length;
+    dy /= length;
+  }
 
-        dx/=len;
-        dy/=len;
+  let speed = .55;
 
-    }
+  if(boostPressed && boost > 0){
 
+    speed = 1.0;
 
-    let speed=.45;
+    boost -= .9;
 
-    if(boostPressed && boostAmount>0){
+    if(boost < 0)
+      boost = 0;
 
-        speed=.88;
+  }else{
 
-        boostAmount-=.8;
+    boost += .25;
 
-        if(boostAmount<0){
-            boostAmount=0;
-        }
+    if(boost > 100)
+      boost = 100;
+  }
 
-        createBoostFlame();
+  player.vx += dx * speed;
+  player.vy += dy * speed;
 
-    }else{
+  player.vx *= .82;
+  player.vy *= .82;
 
-        boostAmount+=.20;
+  player.x += player.vx;
+  player.y += player.vy;
 
-        if(boostAmount>100){
-            boostAmount=100;
-        }
-
-    }
-
-
-    player.vx+=dx*speed;
-    player.vy+=dy*speed;
-
-    player.vx*=.84;
-    player.vy*=.84;
-
-    player.x+=player.vx;
-    player.y+=player.vy;
-
-    keepInside(player);
-
+  keepInside(player);
 }
 
-
-/* =========================
+/* --------------------
    BOT
-========================= */
+-------------------- */
 
 function updateBot(){
 
-    let targetX=ball.x;
-    let targetY=ball.y;
+  let dx = ball.x - bot.x;
+  let dy = ball.y - bot.y;
 
+  const distance = Math.hypot(dx,dy) || 1;
 
-    /*
-       BOT AUS ECKEN HERAUSHALTEN
-    */
+  dx /= distance;
+  dy /= distance;
 
-    const nearLeft=ball.x<100;
-    const nearRight=ball.x>W-100;
-    const nearTop=ball.y<100;
-    const nearBottom=ball.y>H-100;
+  bot.vx += dx * .13;
+  bot.vy += dy * .13;
 
+  const speed =
+    Math.hypot(bot.vx,bot.vy);
 
-    if(nearLeft || nearRight){
+  const maxSpeed = 3.8;
 
-        if(ball.y<H/2){
+  if(speed > maxSpeed){
+    bot.vx =
+      bot.vx / speed * maxSpeed;
 
-            targetY+=85;
+    bot.vy =
+      bot.vy / speed * maxSpeed;
+  }
 
-        }else{
+  bot.vx *= .94;
+  bot.vy *= .94;
 
-            targetY-=85;
+  bot.x += bot.vx;
+  bot.y += bot.vy;
 
-        }
-
-    }
-
-
-    if(nearTop || nearBottom){
-
-        if(ball.x<W/2){
-
-            targetX+=85;
-
-        }else{
-
-            targetX-=85;
-
-        }
-
-    }
-
-
-    /*
-       Wenn Bot direkt neben Ball hängt:
-       Zielpunkt leicht hinter Ball setzen.
-    */
-
-    let dx=targetX-bot.x;
-    let dy=targetY-bot.y;
-
-    let distance=Math.hypot(dx,dy);
-
-    if(distance<1){
-        distance=1;
-    }
-
-    dx/=distance;
-    dy/=distance;
-
-
-    bot.vx+=dx*.12;
-    bot.vy+=dy*.12;
-
-
-    let maxSpeed=3.8;
-
-    let speed=Math.hypot(bot.vx,bot.vy);
-
-    if(speed>maxSpeed){
-
-        bot.vx=bot.vx/speed*maxSpeed;
-        bot.vy=bot.vy/speed*maxSpeed;
-
-    }
-
-
-    bot.vx*=.94;
-    bot.vy*=.94;
-
-
-    bot.x+=bot.vx;
-    bot.y+=bot.vy;
-
-
-    keepInside(bot);
-
-
-    /*
-       ANTI-STUCK:
-       Wenn Bot sehr langsam ist und Ball
-       gleichzeitig nahe an einer Wand liegt,
-       bekommt er einen kräftigen Schubs
-       Richtung Spielfeldmitte.
-    */
-
-    if(
-        Math.abs(bot.vx)<.08 &&
-        Math.abs(bot.vy)<.08 &&
-        distance<80 &&
-        (nearLeft||nearRight||nearTop||nearBottom)
-    ){
-
-        bot.stuckTimer++;
-
-    }else{
-
-        bot.stuckTimer=0;
-
-    }
-
-
-    if(bot.stuckTimer>18){
-
-        let cx=W/2-bot.x;
-        let cy=H/2-bot.y;
-
-        let cd=Math.hypot(cx,cy);
-
-        if(cd>1){
-
-            bot.vx+=(cx/cd)*1.4;
-            bot.vy+=(cy/cd)*1.4;
-
-        }
-
-        bot.stuckTimer=0;
-
-    }
-
+  keepInside(bot);
 }
 
-
-/* =========================
-   KEEP INSIDE
-========================= */
+/* --------------------
+   GRENZEN
+-------------------- */
 
 function keepInside(car){
 
-    let left=MARGIN+car.r;
-    let right=W-MARGIN-car.r;
-    let top=MARGIN+car.r;
-    let bottom=H-MARGIN-car.r;
+  const margin = 20;
 
-    if(car.x<left){
+  if(car.x < margin + car.r){
+    car.x = margin + car.r;
+    car.vx = Math.abs(car.vx) * .5;
+  }
 
-        car.x=left;
-        car.vx=Math.abs(car.vx)*.5;
+  if(car.x > W - margin - car.r){
+    car.x = W - margin - car.r;
+    car.vx = -Math.abs(car.vx) * .5;
+  }
 
-    }
+  if(car.y < margin + car.r){
+    car.y = margin + car.r;
+    car.vy = Math.abs(car.vy) * .5;
+  }
 
-    if(car.x>right){
-
-        car.x=right;
-        car.vx=-Math.abs(car.vx)*.5;
-
-    }
-
-    if(car.y<top){
-
-        car.y=top;
-        car.vy=Math.abs(car.vy)*.5;
-
-    }
-
-    if(car.y>bottom){
-
-        car.y=bottom;
-        car.vy=-Math.abs(car.vy)*.5;
-
-    }
-
+  if(car.y > H - margin - car.r){
+    car.y = H - margin - car.r;
+    car.vy = -Math.abs(car.vy) * .5;
+  }
 }
 
-
-/* =========================
-   CAR COLLISION
-========================= */
+/* --------------------
+   AUTOS
+-------------------- */
 
 function carCollision(){
 
-    let dx=bot.x-player.x;
-    let dy=bot.y-player.y;
+  const dx = bot.x - player.x;
+  const dy = bot.y - player.y;
 
-    let distance=Math.hypot(dx,dy);
+  const distance = Math.hypot(dx,dy);
 
-    let minDistance=bot.r+player.r;
+  const minDistance =
+    bot.r + player.r;
 
-    if(distance<minDistance){
+  if(distance < minDistance){
 
-        if(distance<.01){
-            distance=.01;
-        }
+    const d = distance || .01;
 
-        let nx=dx/distance;
-        let ny=dy/distance;
+    const nx = dx / d;
+    const ny = dy / d;
 
-        let overlap=minDistance-distance;
+    const overlap =
+      minDistance - d;
 
-        player.x-=nx*overlap*.5;
-        player.y-=ny*overlap*.5;
+    player.x -= nx * overlap / 2;
+    player.y -= ny * overlap / 2;
 
-        bot.x+=nx*overlap*.5;
-        bot.y+=ny*overlap*.5;
+    bot.x += nx * overlap / 2;
+    bot.y += ny * overlap / 2;
 
+    player.vx -= nx * .8;
+    player.vy -= ny * .8;
 
-        let push=1.2;
-
-        player.vx-=nx*push;
-        player.vy-=ny*push;
-
-        bot.vx+=nx*push;
-        bot.vy+=ny*push;
-
-        keepInside(player);
-        keepInside(bot);
-
-    }
-
+    bot.vx += nx * .8;
+    bot.vy += ny * .8;
+  }
 }
 
-
-/* =========================
-   CAR BALL COLLISION
-========================= */
-
-function carBallCollision(car){
-
-    let dx=ball.x-car.x;
-    let dy=ball.y-car.y;
-
-    let distance=Math.hypot(dx,dy);
-
-    let minDistance=ball.r+car.r;
-
-    if(distance<minDistance){
-
-        if(distance<.01){
-            distance=.01;
-        }
-
-        let nx=dx/distance;
-        let ny=dy/distance;
-
-        let overlap=minDistance-distance;
-
-        ball.x+=nx*overlap;
-        ball.y+=ny*overlap;
-
-
-        let force=2.8;
-
-        ball.vx+=nx*force+car.vx*.5;
-        ball.vy+=ny*force+car.vy*.5;
-
-
-        let speed=Math.hypot(ball.vx,ball.vy);
-
-        let max=12;
-
-        if(speed>max){
-
-            ball.vx=ball.vx/speed*max;
-            ball.vy=ball.vy/speed*max;
-
-        }
-
-    }
-
-}
-
-
-/* =========================
+/* --------------------
    BALL
-========================= */
+-------------------- */
+
+function carBall(car){
+
+  const dx = ball.x - car.x;
+  const dy = ball.y - car.y;
+
+  const distance = Math.hypot(dx,dy);
+
+  const minDistance =
+    ball.r + car.r;
+
+  if(distance < minDistance){
+
+    const d = distance || .01;
+
+    const nx = dx / d;
+    const ny = dy / d;
+
+    const overlap =
+      minDistance - d;
+
+    ball.x += nx * overlap;
+    ball.y += ny * overlap;
+
+    ball.vx += nx * 2.8;
+    ball.vy += ny * 2.8;
+
+    ball.vx += car.vx * .45;
+    ball.vy += car.vy * .45;
+
+    const speed =
+      Math.hypot(ball.vx,ball.vy);
+
+    if(speed > 12){
+
+      ball.vx =
+        ball.vx / speed * 12;
+
+      ball.vy =
+        ball.vy / speed * 12;
+    }
+  }
+}
 
 function updateBall(){
 
-    ball.x+=ball.vx;
-    ball.y+=ball.vy;
+  ball.x += ball.vx;
+  ball.y += ball.vy;
 
-    ball.vx*=.992;
-    ball.vy*=.992;
+  ball.vx *= .992;
+  ball.vy *= .992;
 
+  const margin = 20;
 
-    /*
-       OBEN / UNTEN
-    */
+  if(ball.y - ball.r < margin){
 
-    if(ball.y-ball.r<MARGIN){
+    ball.y = margin + ball.r;
+    ball.vy = Math.abs(ball.vy) * .9;
+  }
 
-        ball.y=MARGIN+ball.r;
+  if(ball.y + ball.r > H - margin){
 
-        ball.vy=Math.abs(ball.vy)*.9;
+    ball.y = H - margin - ball.r;
+    ball.vy = -Math.abs(ball.vy) * .9;
+  }
 
+  const goalHeight = H * .34;
+  const goalTop =
+    (H - goalHeight) / 2;
+
+  const goalBottom =
+    goalTop + goalHeight;
+
+  if(ball.x - ball.r < 0){
+
+    if(ball.y > goalTop &&
+       ball.y < goalBottom){
+
+      scoreGoal("orange");
+      return;
     }
 
-    if(ball.y+ball.r>H-MARGIN){
+    ball.x = margin + ball.r;
+    ball.vx = Math.abs(ball.vx) * .9;
+  }
 
-        ball.y=H-MARGIN-ball.r;
+  if(ball.x + ball.r > W){
 
-        ball.vy=-Math.abs(ball.vy)*.9;
+    if(ball.y > goalTop &&
+       ball.y < goalBottom){
 
+      scoreGoal("blue");
+      return;
     }
 
-
-    /*
-       TORERKENNUNG
-       
-       WICHTIG:
-       goalLocked verhindert mehrfaches Zählen.
-    */
-
-    if(!goalLocked){
-
-        /*
-           Blaues Tor links
-        */
-
-        if(ball.x-ball.r<0){
-
-            scoreGoal("orange");
-
-            return;
-
-        }
-
-
-        /*
-           Oranges Tor rechts
-        */
-
-        if(ball.x+ball.r>W){
-
-            scoreGoal("blue");
-
-            return;
-
-        }
-
-    }
-
-
-    /*
-       Seitenwände außerhalb des Torbereichs
-    */
-
-    const goalHeight=H*.32;
-
-    const goalTop=(H-goalHeight)/2;
-    const goalBottom=goalTop+goalHeight;
-
-
-    if(ball.x-ball.r<MARGIN && ball.y<goalTop){
-
-        ball.x=MARGIN+ball.r;
-        ball.vx=Math.abs(ball.vx)*.9;
-
-    }
-
-    if(ball.x+ball.r>W-MARGIN && ball.y<goalTop){
-
-        ball.x=W-MARGIN-ball.r;
-        ball.vx=-Math.abs(ball.vx)*.9;
-
-    }
-
-    if(ball.x-ball.r<MARGIN && ball.y>goalBottom){
-
-        ball.x=MARGIN+ball.r;
-        ball.vx=Math.abs(ball.vx)*.9;
-
-    }
-
-    if(ball.x+ball.r>W-MARGIN && ball.y>goalBottom){
-
-        ball.x=W-MARGIN-ball.r;
-        ball.vx=-Math.abs(ball.vx)*.9;
-
-    }
-
+    ball.x = W - margin - ball.r;
+    ball.vx = -Math.abs(ball.vx) * .9;
+  }
 }
 
-
-/* =========================
+/* --------------------
    TOR
-========================= */
+-------------------- */
 
 function scoreGoal(team){
 
-    /*
-       SOFORT sperren.
-       Dadurch kann dieses Tor nur EINMAL
-       gezählt werden.
-    */
+  if(team === "blue")
+    blueScore++;
 
-    if(goalLocked)return;
+  else
+    orangeScore++;
 
-    goalLocked=true;
+  updateScore();
 
-    if(team==="blue"){
+  goalText.style.opacity = "1";
+  goalText.style.transform =
+    "translate(-50%,-50%) scale(1)";
 
-        blueScore++;
+  clearTimeout(goalTimer);
 
-    }else{
+  goalTimer = setTimeout(()=>{
 
-        orangeScore++;
+    goalText.style.opacity = "0";
 
-    }
+    goalText.style.transform =
+      "translate(-50%,-50%) scale(.5)";
 
+  },900);
 
-    document.getElementById("score").textContent=
-        "🔵 "+blueScore+" : "+orangeScore+" 🟠";
-
-
-    goalExplosion(ball.x,ball.y);
-
-    showGoal();
-
-
-    /*
-       Ball und Spieler kurz einfrieren.
-    */
-
-    ball.vx=0;
-    ball.vy=0;
-
-    player.vx=0;
-    player.vy=0;
-
-    bot.vx=0;
-    bot.vy=0;
-
-
-    /*
-       NUR EIN EINZIGER RESET.
-    */
-
-    clearTimeout(goalTimer);
-
-    goalTimer=setTimeout(()=>{
-
-        resetPositions();
-
-        goalLocked=false;
-
-    },1300);
-
+  resetPositions();
 }
 
+function updateScore(){
 
-/* =========================
-   GOAL TEXT
-========================= */
-
-function showGoal(){
-
-    const text=document.getElementById("goalText");
-
-    text.style.opacity="1";
-    text.style.transform=
-        "translate(-50%,-50%) scale(1.15)";
-
-    setTimeout(()=>{
-
-        text.style.opacity="0";
-        text.style.transform=
-            "translate(-50%,-50%) scale(.5)";
-
-    },850);
-
+  scoreText.textContent =
+    "🔵 " + blueScore +
+    " : " +
+    orangeScore +
+    " 🟠";
 }
 
-
-/* =========================
-   EXPLOSION
-========================= */
-
-function goalExplosion(x,y){
-
-    for(let i=0;i<55;i++){
-
-        let angle=Math.random()*Math.PI*2;
-
-        let speed=2+Math.random()*6;
-
-        particles.push({
-
-            x:x,
-            y:y,
-
-            vx:Math.cos(angle)*speed,
-            vy:Math.sin(angle)*speed,
-
-            life:45+Math.random()*35,
-
-            size:3+Math.random()*5
-
-        });
-
-    }
-
-}
-
-
-/* =========================
-   BOOST FLAME
-========================= */
-
-function createBoostFlame(){
-
-    let speed=Math.hypot(player.vx,player.vy);
-
-    if(speed<.2)return;
-
-    let angle=Math.atan2(player.vy,player.vx);
-
-    particles.push({
-
-        x:player.x-Math.cos(angle)*25,
-        y:player.y-Math.sin(angle)*25,
-
-        vx:-Math.cos(angle)*(1+Math.random()*2),
-        vy:-Math.sin(angle)*(1+Math.random()*2),
-
-        life:15+Math.random()*10,
-
-        size:4+Math.random()*5
-
-    });
-
-}
-
-
-/* =========================
-   PARTICLES
-========================= */
-
-function updateParticles(){
-
-    for(let i=particles.length-1;i>=0;i--){
-
-        let p=particles[i];
-
-        p.x+=p.vx;
-        p.y+=p.vy;
-
-        p.vx*=.96;
-        p.vy*=.96;
-
-        p.life--;
-
-        if(p.life<=0){
-
-            particles.splice(i,1);
-
-        }
-
-    }
-
-}
-
-
-/* =========================
-   DRAW FIELD
-========================= */
+/* --------------------
+   ZEICHNEN
+-------------------- */
 
 function drawField(){
 
-    ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = "#16803a";
+  ctx.fillRect(0,0,W,H);
 
+  ctx.strokeStyle = "#ffffff88";
+  ctx.lineWidth = 4;
 
-    /*
-       Rasen
-    */
+  ctx.strokeRect(
+    20,20,
+    W-40,H-40
+  );
 
-    ctx.fillStyle="#14833b";
+  ctx.beginPath();
+  ctx.moveTo(W/2,20);
+  ctx.lineTo(W/2,H-20);
+  ctx.stroke();
 
-    ctx.beginPath();
+  ctx.beginPath();
+  ctx.arc(
+    W/2,H/2,
+    Math.min(W,H)*.13,
+    0,Math.PI*2
+  );
+  ctx.stroke();
 
-    ctx.roundRect(
-        MARGIN,
-        MARGIN,
-        W-MARGIN*2,
-        H-MARGIN*2,
-        RADIUS
-    );
+  const goalHeight = H * .34;
+  const top = (H-goalHeight)/2;
 
-    ctx.fill();
+  ctx.fillStyle = "#2495ff55";
+  ctx.fillRect(0,top,45,goalHeight);
 
-
-    /*
-       Feldlinien
-    */
-
-    ctx.strokeStyle="#ffffffaa";
-    ctx.lineWidth=4;
-
-    ctx.beginPath();
-
-    ctx.roundRect(
-        MARGIN,
-        MARGIN,
-        W-MARGIN*2,
-        H-MARGIN*2,
-        RADIUS
-    );
-
-    ctx.stroke();
-
-
-    /*
-       Mittellinie
-    */
-
-    ctx.beginPath();
-
-    ctx.moveTo(W/2,MARGIN);
-    ctx.lineTo(W/2,H-MARGIN);
-
-    ctx.stroke();
-
-
-    /*
-       Mittelkreis
-    */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        W/2,
-        H/2,
-        75,
-        0,
-        Math.PI*2
-    );
-
-    ctx.stroke();
-
-
-    /*
-       Tore
-    */
-
-    const goalHeight=H*.32;
-    const goalTop=(H-goalHeight)/2;
-
-
-    ctx.fillStyle="#2495ff55";
-
-    ctx.fillRect(
-        0,
-        goalTop,
-        MARGIN+5,
-        goalHeight
-    );
-
-
-    ctx.fillStyle="#ff8a2255";
-
-    ctx.fillRect(
-        W-MARGIN-5,
-        goalTop,
-        MARGIN+5,
-        goalHeight
-    );
-
-
-    /*
-       Torpfosten
-    */
-
-    ctx.strokeStyle="#fff";
-    ctx.lineWidth=7;
-
-    ctx.beginPath();
-
-    ctx.moveTo(MARGIN,goalTop);
-    ctx.lineTo(MARGIN,goalTop+goalHeight);
-
-    ctx.stroke();
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(W-MARGIN,goalTop);
-    ctx.lineTo(W-MARGIN,goalTop+goalHeight);
-
-    ctx.stroke();
-
+  ctx.fillStyle = "#ff8a2255";
+  ctx.fillRect(W-45,top,45,goalHeight);
 }
 
+function drawCar(car,color){
 
-/* =========================
-   DRAW CAR
-========================= */
+  ctx.save();
 
-function drawCar(car){
+  ctx.translate(car.x,car.y);
 
-    ctx.save();
+  const angle =
+    Math.atan2(car.vy,car.vx);
 
-    ctx.translate(car.x,car.y);
+  if(Math.hypot(car.vx,car.vy) > .05)
+    ctx.rotate(angle);
 
-    let angle=Math.atan2(car.vy,car.vx);
+  ctx.fillStyle = "#111";
+  ctx.fillRect(
+    -28,-18,
+    56,36
+  );
 
-    if(Math.hypot(car.vx,car.vy)>.1){
+  ctx.fillStyle = color;
 
-        ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.roundRect(
+    -25,-15,
+    50,30,
+    9
+  );
+  ctx.fill();
 
-    }
+  ctx.fillStyle = "#dff6ff";
 
+  ctx.fillRect(
+    2,-11,
+    16,22
+  );
 
-    /*
-       Schatten
-    */
+  ctx.fillStyle = "#111";
 
-    ctx.fillStyle="#0005";
+  ctx.fillRect(
+    -24,-20,
+    13,7
+  );
 
-    ctx.beginPath();
+  ctx.fillRect(
+    -24,13,
+    13,7
+  );
 
-    ctx.ellipse(
-        3,
-        7,
-        car.r,
-        car.r*.65,
-        0,
-        0,
-        Math.PI*2
-    );
+  ctx.fillRect(
+    12,-20,
+    13,7
+  );
 
-    ctx.fill();
+  ctx.fillRect(
+    12,13,
+    13,7
+  );
 
-
-    /*
-       Auto
-    */
-
-    ctx.fillStyle=car.color;
-
-    ctx.beginPath();
-
-    ctx.roundRect(
-        -car.r,
-        -car.r*.65,
-        car.r*2,
-        car.r*1.3,
-        12
-    );
-
-    ctx.fill();
-
-
-    /*
-       Fenster
-    */
-
-    ctx.fillStyle="#bdeaff";
-
-    ctx.beginPath();
-
-    ctx.roundRect(
-        -car.r*.45,
-        -car.r*.43,
-        car.r*.9,
-        car.r*.42,
-        6
-    );
-
-    ctx.fill();
-
-
-    /*
-       Räder
-    */
-
-    ctx.fillStyle="#111";
-
-    ctx.fillRect(
-        -car.r*.85,
-        -car.r*.75,
-        12,
-        9
-    );
-
-    ctx.fillRect(
-        car.r*.55,
-        -car.r*.75,
-        12,
-        9
-    );
-
-    ctx.fillRect(
-        -car.r*.85,
-        car.r*.55,
-        12,
-        9
-    );
-
-    ctx.fillRect(
-        car.r*.55,
-        car.r*.55,
-        12,
-        9
-    );
-
-    ctx.restore();
-
+  ctx.restore();
 }
-
-
-/* =========================
-   DRAW BALL
-========================= */
 
 function drawBall(){
 
-    ctx.fillStyle="#fff";
+  ctx.beginPath();
 
-    ctx.beginPath();
+  ctx.arc(
+    ball.x,
+    ball.y,
+    ball.r,
+    0,
+    Math.PI*2
+  );
 
-    ctx.arc(
-        ball.x,
-        ball.y,
-        ball.r,
-        0,
-        Math.PI*2
-    );
+  ctx.fillStyle = "white";
+  ctx.fill();
 
-    ctx.fill();
+  ctx.strokeStyle = "#ddd";
+  ctx.lineWidth = 2;
+  ctx.stroke();
 
+  ctx.fillStyle = "#222";
 
-    ctx.strokeStyle="#111";
-    ctx.lineWidth=3;
-
-    ctx.stroke();
-
-
-    ctx.fillStyle="#222";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        ball.x,
-        ball.y,
-        5,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
+  ctx.beginPath();
+  ctx.arc(
+    ball.x,
+    ball.y,
+    5,
+    0,
+    Math.PI*2
+  );
+  ctx.fill();
 }
 
-
-/* =========================
-   DRAW PARTICLES
-========================= */
-
-function drawParticles(){
-
-    for(const p of particles){
-
-        ctx.globalAlpha=Math.max(0,p.life/60);
-
-        ctx.fillStyle="#ffd166";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            p.size,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-    }
-
-    ctx.globalAlpha=1;
-
-}
-
-
-/* =========================
+/* --------------------
    UI
-========================= */
+-------------------- */
 
 function updateUI(){
 
-    document.getElementById("boostFill").style.width=
-        boostAmount+"%";
+  boostFill.style.width =
+    boost + "%";
 
-    document.getElementById("boostText").textContent=
-        "BOOST: "+Math.round(boostAmount)+"%";
-
+  boostText.textContent =
+    "BOOST: " +
+    Math.round(boost) +
+    "%";
 }
 
-
-/* =========================
-   LOOP
-========================= */
+/* --------------------
+   SPIEL
+-------------------- */
 
 function loop(){
 
-    if(!gameRunning)return;
+  if(!running) return;
 
+  updatePlayer();
+  updateBot();
 
-    if(!goalLocked){
+  carCollision();
 
-        updatePlayer();
-        updateBot();
+  carBall(player);
+  carBall(bot);
 
-        carCollision();
+  updateBall();
 
-        carBallCollision(player);
-        carBallCollision(bot);
+  drawField();
 
-        updateBall();
+  drawCar(
+    player,
+    "#2495ff"
+  );
 
+  drawCar(
+    bot,
+    "#ff8a22"
+  );
+
+  drawBall();
+
+  updateUI();
+
+  requestAnimationFrame(loop);
+}
+
+/* --------------------
+   MENÜ
+-------------------- */
+
+back.addEventListener("click",()=>{
+
+  running = false;
+
+  game.style.display = "none";
+  menu.style.display = "flex";
+
+  resetJoystick();
+  boostPressed = false;
+});
+
+/* iPad-Schutz:
+   verhindert Wischen/Scrollen
+   während des Spiels */
+document.addEventListener(
+  "touchmove",
+  e=>{
+    if(game.contains(e.target)){
+      e.preventDefault();
     }
+  },
+  {passive:false}
+);
 
+document.addEventListener(
+  "gesturestart",
+  e=>{
+    e.preventDefault();
+  },
+  {passive:false}
+);
 
-    updateParticles();
-
-
-    drawField();
-
-    drawParticles();
-
-    drawBall();
-
-    drawCar(player);
-
-    drawCar(bot);
-
-
-    updateUI();
-
-
-    requestAnimationFrame(loop);
-
-}
-
-
-/* =========================
-   BACK TO MENU
-========================= */
-
-function backMenu(){
-
-    gameRunning=false;
-
-    clearTimeout(goalTimer);
-
-    document.getElementById("game").style.display="none";
-    document.getElementById("menu").style.display="flex";
-
-    blueScore=0;
-    orangeScore=0;
-
-    goalLocked=false;
-
-}
 
 </script>
 
