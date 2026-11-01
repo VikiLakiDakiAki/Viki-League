@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>VIKI LEAGUE</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020710;color:#fff;font-family:Arial,sans-serif;touch-action:none}
+body{background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 2px,transparent 2px 18px),linear-gradient(135deg,#020710,#071a31,#123b63)}
+button,input{font:inherit}
+button{border:0;border-radius:14px;color:#fff;background:#168cff;padding:13px 18px;font-weight:bold}
+button:active{transform:scale(.96)}
+.hidden{display:none!important}
+#powered{position:fixed;top:5px;left:50%;transform:translateX(-50%);font-size:10px;opacity:.55;z-index:50}
+.topbar{position:absolute;top:25px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;z-index:20}
+.topbar button{background:rgba(20,45,75,.9);border:1px solid rgba(255,255,255,.15);padding:10px 14px}
+.logo{font-size:22px;font-weight:900;letter-spacing:2px}
+.panel{position:absolute;top:80px;left:50%;transform:translateX(-50%);width:min(90%,420px);background:rgba(3,14,28,.97);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:22px;z-index:40;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.panel h2{margin-top:0}
+.panel input{width:100%;padding:13px;border-radius:12px;border:1px solid #42617d;background:#08192c;color:#fff;outline:none;margin-bottom:10px}
+.close{float:right;background:#26384c;padding:7px 10px}
+#menu{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;padding:30px}
+.menuTitle{font-size:46px;font-weight:900;letter-spacing:3px;text-align:center;text-shadow:0 0 25px #168cff}
+.subtitle{opacity:.7;margin-bottom:20px}
+.menuButton{width:min(90%,350px);font-size:17px;padding:17px}
+.friendButton{background:#263f59}
+#game{position:absolute;inset:0;display:flex;justify-content:center;align-items:center}
+#backBtn{position:absolute;top:72px;left:15px;z-index:20;background:#26384c}
+#score{position:absolute;top:67px;left:50%;transform:translateX(-50%);font-size:30px;font-weight:900;z-index:10}
+#gameCanvas{width:min(96vw,1100px);height:auto;max-height:72vh;border:5px solid #8affb0;border-radius:18px;background:#16733b;box-shadow:0 0 35px rgba(0,255,120,.18)}
+.controls{position:absolute;bottom:15px;left:0;right:0;display:flex;justify-content:space-between;align-items:end;padding:0 20px;z-index:20}
+.joystick{width:115px;height:115px;border-radius:50%;background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.25);position:relative}
+.stick{position:absolute;width:55px;height:55px;left:28px;top:28px;border-radius:50%;background:#168cff;box-shadow:0 0 20px rgba(22,140,255,.6)}
+.boostArea{display:flex;flex-direction:column;align-items:center;gap:7px}
+#boostBar{width:180px;height:13px;background:#182432;border-radius:10px;overflow:hidden;border:1px solid #506070}
+#boostFill{width:100%;height:100%;background:#ffb400}
+#boostBtn{background:#ff7818;width:130px}
+#friendsList{margin-top:12px}
+.friendRow{padding:10px;margin-top:6px;background:#0c2137;border-radius:10px}
+@media(max-width:600px){
+.logo{font-size:17px}
+.topbar button{font-size:12px;padding:9px}
+.menuTitle{font-size:34px}
+#gameCanvas{width:96vw}
+.controls{padding:0 12px}
+.joystick{width:100px;height:100px}
+.stick{left:23px;top:23px}
+#boostBar{width:140px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="powered">POWERED BY CHATGPT</div>
+
+<div class="topbar">
+<button id="friendsBtn">👥 FREUNDE</button>
+<div class="logo">VIKI LEAGUE</div>
+<button id="nameBtn">✏️ NAME</button>
+</div>
+
+<div id="namePanel" class="panel hidden">
+<button class="close" id="closeName">✕</button>
+<h2>Spielernamen ändern</h2>
+<input id="nameInput" maxlength="18" placeholder="Dein Name">
+<button id="saveName">SPEICHERN</button>
+</div>
+
+<div id="friendsPanel" class="panel hidden">
+<button class="close" id="closeFriends">✕</button>
+<h2>👥 Freunde</h2>
+<input id="friendInput" maxlength="18" placeholder="Spielername">
+<button id="addFriend">HINZUFÜGEN</button>
+<div id="friendsList"></div>
+</div>
+
+<div id="menu">
+<div class="menuTitle">VIKI LEAGUE</div>
+<div class="subtitle">CAR FOOTBALL • BOOST • GOALS</div>
+<button class="menuButton" id="botBtn">⚽ GEGEN BOT SPIELEN</button>
+<button class="menuButton friendButton" id="friendBtn">👥 GEGEN FREUND SPIELEN</button>
+</div>
+
+<div id="game" class="hidden">
+<button id="backBtn">← MENÜ</button>
+<div id="score">0 - 0</div>
+
+<canvas id="gameCanvas" width="1000" height="560"></canvas>
+
+<div class="controls">
+<div class="joystick" id="joystick">
+<div class="stick" id="stick"></div>
+</div>
+
+<div class="boostArea">
+<div id="boostBar">
+<div id="boostFill"></div>
+</div>
+<button id="boostBtn">⚡ BOOST</button>
+</div>
+</div>
+</div>
+
+<script>
+
+let playerName=localStorage.getItem("viki_name")||"TurboTiger42";
+
+const nameBtn=document.getElementById("nameBtn");
+
+function updateNameButton(){
+nameBtn.textContent="✏️ "+playerName
+}
+
+updateNameButton();
+
+nameBtn.onclick=()=>{
+document.getElementById("nameInput").value=playerName;
+document.getElementById("namePanel").classList.remove("hidden")
+};
+
+document.getElementById("closeName").onclick=()=>{
+document.getElementById("namePanel").classList.add("hidden")
+};
+
+document.getElementById("saveName").onclick=()=>{
+let n=document.getElementById("nameInput").value.trim();
+
+if(!n)return alert("Bitte einen Namen eingeben.");
+
+playerName=n.slice(0,18);
+
+localStorage.setItem("viki_name",playerName);
+
+updateNameButton();
+
+document.getElementById("namePanel").classList.add("hidden")
+};
+
+let friends=JSON.parse(localStorage.getItem("viki_friends")||"[]");
+
+function renderFriends(){
+
+const list=document.getElementById("friendsList");
+
+list.innerHTML="";
+
+if(!friends.length){
+
+list.innerHTML="<div style='opacity:.6;margin-top:12px'>Noch keine Freunde.</div>";
+
+return
+}
+
+friends.forEach(n=>{
+
+let r=document.createElement("div");
+
+r.className="friendRow";
+
+r.textContent="👤 "+n;
+
+list.appendChild(r)
+
+})
+
+}
+
+document.getElementById("friendsBtn").onclick=()=>{
+renderFriends();
+document.getElementById("friendsPanel").classList.remove("hidden")
+};
+
+document.getElementById("closeFriends").onclick=()=>{
+document.getElementById("friendsPanel").classList.add("hidden")
+};
+
+document.getElementById("addFriend").onclick=()=>{
+
+let i=document.getElementById("friendInput");
+
+let n=i.value.trim();
+
+if(!n)return;
+
+if(n.toLowerCase()===playerName.toLowerCase())
+return alert("Du kannst dich nicht selbst hinzufügen.");
+
+if(!friends.some(x=>x.toLowerCase()===n.toLowerCase())){
+
+friends.push(n.slice(0,18));
+
+localStorage.setItem("viki_friends",JSON.stringify(friends))
+
+}
+
+i.value="";
+
+renderFriends()
+
+};
+
+const menu=document.getElementById("menu");
+
+const game=document.getElementById("game");
+
+const canvas=document.getElementById("gameCanvas");
+
+const ctx=canvas.getContext("2d");
+
+const W=canvas.width;
+
+const H=canvas.height;
+
+let running=false;
+
+let scoreBlue=0;
+
+let scoreOrange=0;
+
+let keys={};
+
+let boost=100;
+
+let boosting=false;
+
+let joystickX=0;
+
+let joystickY=0;
+
+const player={
+x:210,
+y:H/2,
+vx:0,
+vy:0,
+angle:0,
+color:"#168cff"
+};
+
+const bot={
+x:790,
+y:H/2,
+vx:0,
+vy:0,
+angle:Math.PI,
+color:"#ff7818"
+};
+
+const ball={
+x:W/2,
+y:H/2,
+vx:2,
+vy:0,
+r:16
+};
+
+function startGame(){
+
+scoreBlue=0;
+
+scoreOrange=0;
+
+player.x=210;
+player.y=H/2;
+player.vx=0;
+player.vy=0;
+
+bot.x=790;
+bot.y=H/2;
+bot.vx=0;
+bot.vy=0;
+
+resetBall();
+
+boost=100;
+
+menu.classList.add("hidden");
+
+game.classList.remove("hidden");
+
+running=true
+
+}
+
+document.getElementById("botBtn").onclick=startGame;
+
+document.getElementById("friendBtn").onclick=()=>{
+alert("Der Online-Multiplayer ist vorbereitet, aber für echtes Spielen mit Freunden muss VIKI LEAGUE über einen WebSocket-Server gehostet werden. 🌐")
+};
+
+document.getElementById("backBtn").onclick=()=>{
+running=false;
+game.classList.add("hidden");
+menu.classList.remove("hidden")
+};
+
+function resetBall(){
+
+ball.x=W/2;
+
+ball.y=H/2;
+
+ball.vx=(Math.random()>.5?1:-1)*2;
+
+ball.vy=(Math.random()-.5)*1.5
+
+}
+
+window.addEventListener("keydown",e=>{
+keys[e.key.toLowerCase()]=true
+});
+
+window.addEventListener("keyup",e=>{
+keys[e.key.toLowerCase()]=false
+});
+
+const joystick=document.getElementById("joystick");
+
+const stick=document.getElementById("stick");
+
+let joyActive=false;
+
+function updateJoystick(e){
+
+const r=joystick.getBoundingClientRect();
+
+const cx=r.left+r.width/2;
+
+const cy=r.top+r.height/2;
+
+let dx=e.clientX-cx;
+
+let dy=e.clientY-cy;
+
+let max=38;
+
+let d=Math.hypot(dx,dy);
+
+if(d>max){
+
+dx=dx/d*max;
+
+dy=dy/d*max
+
+}
+
+joystickX=dx/max;
+
+joystickY=dy/max;
+
+stick.style.transform=`translate(${dx}px,${dy}px)`
+
+}
+
+joystick.addEventListener("pointerdown",e=>{
+
+joyActive=true;
+
+joystick.setPointerCapture(e.pointerId);
+
+updateJoystick(e)
+
+});
+
+joystick.addEventListener("pointermove",e=>{
+
+if(joyActive)updateJoystick(e)
+
+});
+
+function resetJoy(){
+
+joyActive=false;
+
+joystickX=0;
+
+joystickY=0;
+
+stick.style.transform="translate(0,0)"
+
+}
+
+joystick.addEventListener("pointerup",resetJoy);
+
+joystick.addEventListener("pointercancel",resetJoy);
+
+const boostBtn=document.getElementById("boostBtn");
+
+boostBtn.addEventListener("pointerdown",()=>{
+boosting=true
+});
+
+boostBtn.addEventListener("pointerup",()=>{
+boosting=false
+});
+
+boostBtn.addEventListener("pointercancel",()=>{
+boosting=false
+});
+
+function updatePlayer(dt){
+
+let ix=joystickX;
+
+let iy=joystickY;
+
+if(keys.w)iy=-1;
+
+if(keys.s)iy=1;
+
+if(keys.a)ix=-1;
+
+if(keys.d)ix=1;
+
+let input=Math.hypot(ix,iy);
+
+if(input>.05){
+
+ix/=input;
+
+iy/=input;
+
+let speed=boosting&&boost>0?430:260;
+
+player.vx+=ix*speed*dt;
+
+player.vy+=iy*speed*dt;
+
+if(boosting&&boost>0)
+boost-=34*dt
+
+}else{
+
+player.vx*=.88;
+
+player.vy*=.88
+
+}
+
+if(!boosting||boost<=0)
+boost+=10*dt;
+
+boost=Math.max(0,Math.min(100,boost));
+
+let max=boosting?450:280;
+
+let s=Math.hypot(player.vx,player.vy);
+
+if(s>max){
+
+player.vx=player.vx/s*max;
+
+player.vy=player.vy/s*max
+
+}
+
+player.x+=player.vx*dt;
+
+player.y+=player.vy*dt;
+
+player.x=Math.max(35,Math.min(W-35,player.x));
+
+player.y=Math.max(45,Math.min(H-45,player.y));
+
+if(input>.05)
+player.angle=Math.atan2(iy,ix)
+
+}
+
+function updateBot(dt){
+
+let dx=ball.x-bot.x;
+
+let dy=ball.y-bot.y;
+
+let d=Math.hypot(dx,dy);
+
+if(d>1){
+
+dx/=d;
+
+dy/=d;
+
+bot.vx+=dx*950*dt;
+
+bot.vy+=dy*950*dt
+
+}
+
+bot.vx*=.94;
+
+bot.vy*=.94;
+
+let s=Math.hypot(bot.vx,bot.vy);
+
+if(s>620){
+
+bot.vx=bot.vx/s*620;
+
+bot.vy=bot.vy/s*620
+
+}
+
+bot.x+=bot.vx*dt;
+
+bot.y+=bot.vy*dt;
+
+bot.x=Math.max(35,Math.min(W-35,bot.x));
+
+bot.y=Math.max(45,Math.min(H-45,bot.y));
+
+if(s>5)
+bot.angle=Math.atan2(bot.vy,bot.vx)
+
+}
+
+function carBall(car){
+
+let dx=ball.x-car.x;
+
+let dy=ball.y-car.y;
+
+let d=Math.hypot(dx,dy);
+
+let min=34;
+
+if(d<min){
+
+if(!d)d=.01;
+
+dx/=d;
+
+dy/=d;
+
+ball.x=car.x+dx*min;
+
+ball.y=car.y+dy*min;
+
+ball.vx+=dx*10+car.vx*.25;
+
+ball.vy+=dy*10+car.vy*.25
+
+}
+
+}
+
+let explosionTimer=0;
+
+function updateBall(dt){
+
+ball.x+=ball.vx*dt;
+
+ball.y+=ball.vy*dt;
+
+ball.vx*=.992;
+
+ball.vy*=.992;
+
+if(ball.y-ball.r<0){
+
+ball.y=ball.r;
+
+ball.vy=Math.abs(ball.vy)
+
+}
+
+if(ball.y+ball.r>H){
+
+ball.y=H-ball.r;
+
+ball.vy=-Math.abs(ball.vy)
+
+}
+
+carBall(player);
+
+carBall(bot);
+
+let s=Math.hypot(ball.vx,ball.vy);
+
+if(s>600){
+
+ball.vx=ball.vx/s*600;
+
+ball.vy=ball.vy/s*600
+
+}
+
+const goalTop=H/2-95;
+
+const goalBottom=H/2+95;
+
+if(ball.x-ball.r<=0){
+
+if(ball.y>=goalTop&&ball.y<=goalBottom){
+
+scoreOrange++;
+
+updateScore();
+
+explosionTimer=.4;
+
+resetBall()
+
+}else{
+
+ball.x=ball.r;
+
+ball.vx=Math.abs(ball.vx)
+
+}
+
+}
+
+if(ball.x+ball.r>=W){
+
+if(ball.y>=goalTop&&ball.y<=goalBottom){
+
+scoreBlue++;
+
+updateScore();
+
+explosionTimer=.4;
+
+resetBall()
+
+}else{
+
+ball.x=W-ball.r;
+
+ball.vx=-Math.abs(ball.vx)
+
+}
+
+}
+
+}
+
+function updateScore(){
+
+document.getElementById("score").textContent=
+scoreBlue+" - "+scoreOrange
+
+}
+
+function drawField(){
+
+ctx.clearRect(0,0,W,H);
+
+ctx.fillStyle="#16733b";
+
+ctx.fillRect(0,0,W,H);
+
+ctx.strokeStyle="rgba(255,255,255,.7)";
+
+ctx.lineWidth=4;
+
+ctx.strokeRect(4,4,W-8,H-8);
+
+ctx.beginPath();
+
+ctx.moveTo(W/2,0);
+
+ctx.lineTo(W/2,H);
+
+ctx.stroke();
+
+ctx.beginPath();
+
+ctx.arc(W/2,H/2,75,0,Math.PI*2);
+
+ctx.stroke();
+
+ctx.fillStyle="rgba(255,255,255,.15)";
+
+ctx.fillRect(0,H/2-95,35,190);
+
+ctx.fillRect(W-35,H/2-95,35,190);
+
+ctx.strokeStyle="#fff";
+
+ctx.strokeRect(0,H/2-95,35,190);
+
+ctx.strokeRect(W-35,H/2-95,35,190)
+
+}
+
+function drawCar(c){
+
+ctx.save();
+
+ctx.translate(c.x,c.y);
+
+ctx.rotate(c.angle);
+
+ctx.fillStyle=c.color;
+
+ctx.beginPath();
+
+ctx.roundRect(-25,-15,50,30,8);
+
+ctx.fill();
+
+ctx.fillStyle="#111";
+
+ctx.fillRect(-13,-18,12,6);
+
+ctx.fillRect(5,-18,12,6);
+
+ctx.fillRect(-13,12,12,6);
+
+ctx.fillRect(5,12,12,6);
+
+ctx.fillStyle="rgba(255,255,255,.8)";
+
+ctx.fillRect(5,-9,13,18);
+
+ctx.restore()
+
+}
+
+function drawBall(){
+
+const g=ctx.createRadialGradient(
+ball.x-5,
+ball.y-5,
+2,
+ball.x,
+ball.y,
+ball.r
+);
+
+g.addColorStop(0,"#fff");
+
+g.addColorStop(.45,"#ddd");
+
+g.addColorStop(1,"#777");
+
+ctx.fillStyle=g;
+
+ctx.beginPath();
+
+ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
+
+ctx.fill();
+
+ctx.strokeStyle="#222";
+
+ctx.lineWidth=2;
+
+ctx.stroke()
+
+}
+
+function drawExplosion(){
+
+if(explosionTimer<=0)return;
+
+let a=explosionTimer/.4;
+
+ctx.save();
+
+ctx.globalAlpha=a;
+
+ctx.strokeStyle="#fff";
+
+ctx.lineWidth=8;
+
+ctx.beginPath();
+
+ctx.arc(
+ball.x,
+ball.y,
+25+(1-a)*70,
+0,
+Math.PI*2
+);
+
+ctx.stroke();
+
+ctx.restore()
+
+}
+
+let last=performance.now();
+
+function loop(now){
+
+let dt=Math.min(.033,(now-last)/1000);
+
+last=now;
+
+if(running){
+
+updatePlayer(dt);
+
+updateBot(dt);
+
+updateBall(dt);
+
+explosionTimer-=dt;
+
+drawField();
+
+drawCar(player);
+
+drawCar(bot);
+
+drawBall();
+
+drawExplosion();
+
+document.getElementById("boostFill").style.width=boost+"%"
+
+}
+
+requestAnimationFrame(loop)
+
+}
+
+requestAnimationFrame(loop);
+
+</script>
+
+</body>
+</html>
