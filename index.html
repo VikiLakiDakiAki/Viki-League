@@ -2,1741 +2,656 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-
-<title>VIKI LEAGUE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Viki Football</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  user-select:none;
-  -webkit-user-select:none;
-  -webkit-touch-callout:none;
+* {
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  position:fixed;
-  touch-action:none;
-  background:#101827;
-  font-family:Arial,sans-serif;
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #18251d;
+  font-family: Arial, sans-serif;
+  touch-action: none;
 }
 
-button,input{
-  touch-action:none;
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, #6da85c 0 5%, transparent 6%),
+    radial-gradient(circle at 80% 30%, #5e9651 0 4%, transparent 5%),
+    linear-gradient(#76b965 0 100%);
 }
 
-#menu{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  color:white;
-  background:linear-gradient(135deg,#101827,#172554);
+/* Hintergrund */
+.tree {
+  position: absolute;
+  width: 55px;
+  height: 80px;
+  background: #315d32;
+  border-radius: 50%;
+  opacity: .55;
 }
 
-#menu h1{
-  margin:0 0 8px;
-  font-size:clamp(42px,9vw,75px);
-  text-shadow:0 5px 15px #000;
+.tree::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 35px;
+  background: #694b2b;
+  left: 18px;
+  top: 55px;
 }
 
-#menu p{
-  color:#aaa;
-  margin:5px;
+.t1 { left: 4%; top: 8%; }
+.t2 { right: 5%; top: 12%; }
+.t3 { left: 7%; bottom: 8%; }
+.t4 { right: 8%; bottom: 10%; }
+
+/* Spielfeld */
+#field {
+  position: absolute;
+  left: 5%;
+  top: 7%;
+  width: 90%;
+  height: 78%;
+  border: 5px solid white;
+  border-radius: 12px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.04) 0px,
+      rgba(255,255,255,.04) 70px,
+      rgba(0,0,0,.03) 70px,
+      rgba(0,0,0,.03) 140px
+    );
 }
 
-#nameInput{
-  width:220px;
-  padding:14px;
-  margin:15px;
-  border:0;
-  border-radius:12px;
-  font-size:17px;
-  text-align:center;
-  touch-action:auto;
-  user-select:text;
-  -webkit-user-select:text;
+/* Mittellinie */
+#field::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: rgba(255,255,255,.9);
+  transform: translateX(-50%);
 }
 
-#play{
-  border:0;
-  border-radius:13px;
-  padding:15px 35px;
-  background:#22c55e;
-  color:white;
-  font-size:18px;
-  font-weight:bold;
+/* Mittelkreis */
+#field::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 110px;
+  height: 110px;
+  border: 4px solid rgba(255,255,255,.9);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
 }
 
-#game{
-  display:none;
-  position:fixed;
-  inset:0;
-  overflow:hidden;
-  touch-action:none;
+/* Tore */
+.goal {
+  position: absolute;
+  top: 37%;
+  width: 65px;
+  height: 26%;
+  border: 4px solid white;
+  background: rgba(255,255,255,.08);
+  z-index: 3;
 }
 
-canvas{
-  display:block;
-  width:100%;
-  height:100%;
-  touch-action:none;
+#leftGoal {
+  left: -4px;
+  border-left: 0;
 }
 
-#score{
-  position:absolute;
-  top:10px;
-  left:50%;
-  transform:translateX(-50%);
-  padding:8px 24px;
-  border-radius:14px;
-  background:#0009;
-  color:white;
-  font-size:26px;
-  font-weight:bold;
-  pointer-events:none;
+#rightGoal {
+  right: -4px;
+  border-right: 0;
 }
 
-#playerName{
-  position:absolute;
-  top:12px;
-  left:12px;
-  padding:8px 13px;
-  border-radius:10px;
-  background:#0009;
-  color:white;
-  pointer-events:none;
+/* Pfosten */
+.post {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: white;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: 0 1px 4px #333;
 }
 
-#back{
-  position:absolute;
-  top:10px;
-  right:10px;
-  padding:10px 16px;
-  border:0;
-  border-radius:10px;
-  background:#0009;
-  color:white;
-  font-weight:bold;
+#post1 { left: -9px; top: 37%; }
+#post2 { left: -9px; top: 63%; }
+#post3 { right: -9px; top: 37%; }
+#post4 { right: -9px; top: 63%; }
+
+/* Latte – nur Deko */
+.crossbar {
+  position: absolute;
+  width: 8px;
+  height: 4px;
+  background: white;
+  z-index: 9;
 }
 
-#joystick{
-  position:absolute;
-  left:25px;
-  bottom:25px;
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  background:#ffffff20;
-  border:3px solid #ffffff55;
-  touch-action:none;
+#cross1 {
+  left: -5px;
+  top: 37%;
+  width: 70px;
 }
 
-#stick{
-  position:absolute;
-  left:42px;
-  top:42px;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:#ffffffaa;
-  pointer-events:none;
+#cross2 {
+  right: -5px;
+  top: 37%;
+  width: 70px;
 }
 
-#boostButton{
-  position:absolute;
-  right:40px;
-  bottom:90px;
-  width:92px;
-  height:92px;
-  border-radius:50%;
-  border:5px solid #ffffff55;
-  background:#f59e0b;
-  color:white;
-  font-weight:bold;
-  font-size:15px;
+/* Spieler */
+.player {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  z-index: 20;
+  border: 3px solid white;
+  box-shadow: 0 3px 7px rgba(0,0,0,.35);
 }
 
-#boostBox{
-  position:absolute;
-  right:25px;
-  bottom:25px;
-  width:140px;
-  padding:7px;
-  border-radius:10px;
-  background:#0009;
-  pointer-events:none;
+#player {
+  background: #3478ff;
 }
 
-#boostText{
-  color:white;
-  text-align:center;
-  font-size:12px;
-  font-weight:bold;
+#bot {
+  background: #ef4545;
 }
 
-#boostBar{
-  height:14px;
-  margin-top:3px;
-  background:#333;
-  border-radius:8px;
-  overflow:hidden;
+/* Namen */
+.name {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px #333;
 }
 
-#boostFill{
-  height:100%;
-  width:100%;
-  background:#f59e0b;
+/* Leben */
+.hp {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translate(-50%,-100%);
+  width: 55px;
+  height: 7px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-#goalText{
-  position:absolute;
-  left:50%;
-  top:45%;
-  transform:translate(-50%,-50%) scale(.5);
-  color:white;
-  font-size:clamp(40px,8vw,70px);
-  font-weight:900;
-  text-shadow:0 5px 20px #000;
-  opacity:0;
-  pointer-events:none;
-  transition:.15s;
+.hpbar {
+  width: 100%;
+  height: 100%;
+  background: #35df57;
 }
 
-#info{
-  position:absolute;
-  bottom:5px;
-  left:50%;
-  transform:translateX(-50%);
-  color:#ffffff99;
-  font-size:11px;
-  pointer-events:none;
+/* Ball */
+#ball {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid #222;
+  border-radius: 50%;
+  z-index: 25;
+  box-shadow: 0 2px 4px rgba(0,0,0,.35);
+}
+
+/* Joystick */
+#joystick {
+  position: absolute;
+  left: 25px;
+  bottom: 25px;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.20);
+  border: 3px solid rgba(255,255,255,.45);
+  z-index: 100;
+}
+
+#stick {
+  position: absolute;
+  left: 37px;
+  top: 37px;
+  width: 51px;
+  height: 51px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 3px 8px rgba(0,0,0,.3);
+}
+
+/* Schuss */
+#shoot {
+  position: absolute;
+  right: 30px;
+  bottom: 35px;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.8);
+  border: 4px solid rgba(0,0,0,.2);
+  z-index: 100;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Score */
+#score {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.45);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  z-index: 200;
 }
 </style>
 </head>
 
 <body>
 
-<div id="menu">
-
-  <h1>VIKI LEAGUE</h1>
-
-  <p>⚽ CAR FOOTBALL</p>
-
-  <input
-    id="nameInput"
-    placeholder="Dein Name"
-    autocomplete="off">
-
-  <button id="play">SPIELEN</button>
-
-</div>
-
-
 <div id="game">
 
-  <canvas id="canvas"></canvas>
+  <div class="tree t1"></div>
+  <div class="tree t2"></div>
+  <div class="tree t3"></div>
+  <div class="tree t4"></div>
 
-  <div id="score">🔵 0 : 0 🟠</div>
+  <div id="score">VIKI 0 : 0 BOT</div>
 
-  <div id="playerName">Viki</div>
+  <div id="field">
 
-  <button id="back">MENÜ</button>
+    <div id="leftGoal" class="goal"></div>
+    <div id="rightGoal" class="goal"></div>
+
+    <div id="post1" class="post"></div>
+    <div id="post2" class="post"></div>
+    <div id="post3" class="post"></div>
+    <div id="post4" class="post"></div>
+
+    <div id="cross1" class="crossbar"></div>
+    <div id="cross2" class="crossbar"></div>
+
+    <div id="player" class="player">
+      <div class="name">VIKI</div>
+      <div class="hp"><div id="playerHP" class="hpbar"></div></div>
+    </div>
+
+    <div id="bot" class="player">
+      <div class="name">BOT</div>
+      <div class="hp"><div id="botHP" class="hpbar"></div></div>
+    </div>
+
+    <div id="ball"></div>
+
+  </div>
 
   <div id="joystick">
     <div id="stick"></div>
   </div>
 
-  <button id="boostButton">BOOST</button>
-
-  <div id="boostBox">
-
-    <div id="boostText">
-      BOOST: 100%
-    </div>
-
-    <div id="boostBar">
-      <div id="boostFill"></div>
-    </div>
-
-  </div>
-
-  <div id="goalText">
-    ⚽ TOR! 💥
-  </div>
-
-  <div id="info">
-    Joystick · WASD / Pfeile · Boost
-  </div>
+  <button id="shoot">⚽</button>
 
 </div>
 
-
 <script>
+const field = document.getElementById("field");
+const player = document.getElementById("player");
+const bot = document.getElementById("bot");
+const ball = document.getElementById("ball");
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
+const shoot = document.getElementById("shoot");
 
-const canvas =
-  document.getElementById("canvas");
+let fw = 0;
+let fh = 0;
 
-const ctx =
-  canvas.getContext("2d");
+let p = {x: 120, y: 250};
+let b = {x: 500, y: 250};
 
+let ballPos = {x: 320, y: 250};
+let ballVel = {x: 0, y: 0};
 
-let W = innerWidth;
-let H = innerHeight;
-
-
-function resize(){
-
-  W = innerWidth;
-  H = innerHeight;
-
-  canvas.width =
-    W * devicePixelRatio;
-
-  canvas.height =
-    H * devicePixelRatio;
-
-  canvas.style.width =
-    W + "px";
-
-  canvas.style.height =
-    H + "px";
-
-  ctx.setTransform(
-    devicePixelRatio,
-    0,
-    0,
-    devicePixelRatio,
-    0,
-    0
-  );
-
-  // Spieler sofort wieder ins Feld setzen
-  keepInside(player);
-  keepInside(bot);
-}
-
-
-window.addEventListener(
-  "resize",
-  resize
-);
-
-
-const menu =
-  document.getElementById("menu");
-
-const game =
-  document.getElementById("game");
-
-const play =
-  document.getElementById("play");
-
-const back =
-  document.getElementById("back");
-
-const joystick =
-  document.getElementById("joystick");
-
-const stick =
-  document.getElementById("stick");
-
-const boostButton =
-  document.getElementById("boostButton");
-
-const scoreText =
-  document.getElementById("score");
-
-const playerName =
-  document.getElementById("playerName");
-
-const boostText =
-  document.getElementById("boostText");
-
-const boostFill =
-  document.getElementById("boostFill");
-
-const goalText =
-  document.getElementById("goalText");
-
-
-let running = false;
-
-let blueScore = 0;
-
-let orangeScore = 0;
-
-let keys = {};
-
-let boostPressed = false;
-
+let scorePlayer = 0;
+let scoreBot = 0;
 
 let joyX = 0;
-
 let joyY = 0;
-
-let joyActive = false;
-
-let joyPointer = null;
-
-
-let boost = 100;
-
-let goalTimer = 0;
-
-
-const FIELD_MARGIN = 20;
-
-
-const player = {
-
-  x:0,
-  y:0,
-
-  r:27,
-
-  vx:0,
-  vy:0
-
-};
-
-
-const bot = {
-
-  x:0,
-  y:0,
-
-  r:27,
-
-  vx:0,
-  vy:0
-
-};
-
-
-const ball = {
-
-  x:0,
-  y:0,
-
-  r:18,
-
-  vx:0,
-  vy:0
-
-};
-
-
-/* =========================
-   TASTATUR
-========================= */
-
-
-window.addEventListener(
-  "keydown",
-  e => {
-
-    keys[
-      e.key.toLowerCase()
-    ] = true;
-
-    if(e.code === "Space"){
-
-      boostPressed = true;
-
-      e.preventDefault();
-
-    }
-
-  }
-);
-
-
-window.addEventListener(
-  "keyup",
-  e => {
-
-    keys[
-      e.key.toLowerCase()
-    ] = false;
-
-    if(e.code === "Space"){
-
-      boostPressed = false;
-
-      e.preventDefault();
-
-    }
-
-  }
-);
-
-
-/* =========================
-   JOYSTICK
-========================= */
-
-
-function moveJoystick(e){
-
-  if(!joyActive)
-    return;
-
-  e.preventDefault();
-
-  const rect =
-    joystick.getBoundingClientRect();
-
-
-  let x =
-    e.clientX -
-    (rect.left + rect.width / 2);
-
-
-  let y =
-    e.clientY -
-    (rect.top + rect.height / 2);
-
-
-  const max = 42;
-
-  const distance =
-    Math.hypot(x,y);
-
-
-  if(distance > max){
-
-    x =
-      x / distance * max;
-
-    y =
-      y / distance * max;
-
-  }
-
-
-  joyX = x / max;
-
-  joyY = y / max;
-
-
-  stick.style.left =
-    (42 + x) + "px";
-
-  stick.style.top =
-    (42 + y) + "px";
-
+let touching = false;
+
+const speed = 4.2;
+const botSpeed = 2.1;
+const ballFriction = 0.985;
+
+function resize() {
+  fw = field.clientWidth;
+  fh = field.clientHeight;
+
+  p.x = Math.min(Math.max(p.x, 25), fw - 25);
+  p.y = Math.min(Math.max(p.y, 25), fh - 25);
+  b.x = Math.min(Math.max(b.x, 25), fw - 25);
+  b.y = Math.min(Math.max(b.y, 25), fh - 25);
 }
 
+window.addEventListener("resize", resize);
+resize();
 
-function resetJoystick(){
+function draw() {
+  player.style.left = (p.x - 21) + "px";
+  player.style.top = (p.y - 21) + "px";
 
-  joyActive = false;
+  bot.style.left = (b.x - 21) + "px";
+  bot.style.top = (b.y - 21) + "px";
 
-  joyPointer = null;
+  ball.style.left = (ballPos.x - 10) + "px";
+  ball.style.top = (ballPos.y - 10) + "px";
+}
+
+function clampPlayer() {
+  p.x = Math.max(25, Math.min(fw - 25, p.x));
+  p.y = Math.max(25, Math.min(fh - 25, p.y));
+}
+
+function movePlayer() {
+  p.x += joyX * speed;
+  p.y += joyY * speed;
+  clampPlayer();
+}
+
+function moveBot() {
+
+  let dx = ballPos.x - b.x;
+  let dy = ballPos.y - b.y;
+
+  let dist = Math.hypot(dx,dy);
+
+  if (dist > 35) {
+    b.x += (dx / dist) * botSpeed;
+    b.y += (dy / dist) * botSpeed;
+  }
+
+  b.x = Math.max(25, Math.min(fw - 25, b.x));
+  b.y = Math.max(25, Math.min(fh - 25, b.y));
+
+  /* Bot soll Ball nicht in die Ecke schieben */
+  if (
+    ballPos.x < 28 ||
+    ballPos.x > fw - 28 ||
+    ballPos.y < 28 ||
+    ballPos.y > fh - 28
+  ) {
+    ballVel.x *= -1.4;
+    ballVel.y *= -1.4;
+
+    ballPos.x = Math.max(32, Math.min(fw - 32, ballPos.x));
+    ballPos.y = Math.max(32, Math.min(fh - 32, ballPos.y));
+  }
+}
+
+function updateBall() {
+
+  ballPos.x += ballVel.x;
+  ballPos.y += ballVel.y;
+
+  ballVel.x *= ballFriction;
+  ballVel.y *= ballFriction;
+
+  /* obere/untere Bande */
+  if (ballPos.y < 10) {
+    ballPos.y = 10;
+    ballVel.y = Math.abs(ballVel.y);
+  }
+
+  if (ballPos.y > fh - 10) {
+    ballPos.y = fh - 10;
+    ballVel.y = -Math.abs(ballVel.y);
+  }
+
+  /* Pfosten */
+  const posts = [
+    {x: 4, y: fh*.37},
+    {x: 4, y: fh*.63},
+    {x: fw-4, y: fh*.37},
+    {x: fw-4, y: fh*.63}
+  ];
+
+  for (const post of posts) {
+
+    let dx = ballPos.x - post.x;
+    let dy = ballPos.y - post.y;
+    let d = Math.hypot(dx,dy);
+
+    if (d < 18) {
+
+      if (d === 0) d = 1;
+
+      ballPos.x = post.x + dx/d * 19;
+      ballPos.y = post.y + dy/d * 19;
+
+      let dot = ballVel.x*(dx/d) + ballVel.y*(dy/d);
+
+      ballVel.x -= 2 * dot * (dx/d);
+      ballVel.y -= 2 * dot * (dy/d);
+
+      ballVel.x *= 1.05;
+      ballVel.y *= 1.05;
+    }
+  }
+
+  /* Seitenwand – aber Toröffnung bleibt offen */
+  const inGoalHeight =
+    ballPos.y > fh*.37 &&
+    ballPos.y < fh*.63;
+
+  if (!inGoalHeight && ballPos.x < 10) {
+    ballPos.x = 10;
+    ballVel.x = Math.abs(ballVel.x);
+  }
+
+  if (!inGoalHeight && ballPos.x > fw-10) {
+    ballPos.x = fw-10;
+    ballVel.x = -Math.abs(ballVel.x);
+  }
+
+  /* Tor */
+  if (ballPos.x < -10) {
+    scoreBot++;
+    resetBall();
+  }
+
+  if (ballPos.x > fw+10) {
+    scorePlayer++;
+    resetBall();
+  }
+}
+
+function kick(fromX, fromY, power) {
+
+  let dx = ballPos.x - fromX;
+  let dy = ballPos.y - fromY;
+  let d = Math.hypot(dx,dy);
+
+  if (d < 65) {
+
+    if (d === 0) d = 1;
+
+    ballVel.x = (dx/d) * power;
+    ballVel.y = (dy/d) * power;
+  }
+}
+
+function playerKick() {
+  kick(p.x,p.y,10);
+}
+
+function botKick() {
+
+  let dx = ballPos.x - b.x;
+  let dy = ballPos.y - b.y;
+  let d = Math.hypot(dx,dy);
+
+  if (d < 45) {
+
+    /* Bot schießt Richtung linkes Tor */
+    let targetX = 0;
+    let targetY = fh/2;
+
+    let tx = targetX-ballPos.x;
+    let ty = targetY-ballPos.y;
+    let td = Math.hypot(tx,ty);
+
+    ballVel.x = (tx/td)*7;
+    ballVel.y = (ty/td)*7;
+  }
+}
+
+function resetBall() {
+
+  ballPos.x = fw/2;
+  ballPos.y = fh/2;
+
+  ballVel.x = 0;
+  ballVel.y = 0;
+
+  p.x = fw*.25;
+  p.y = fh*.5;
+
+  b.x = fw*.75;
+  b.y = fh*.5;
+
+  document.getElementById("score").textContent =
+    "VIKI " + scorePlayer + " : " + scoreBot + " BOT";
+}
+
+/* Joystick */
+
+function joystickMove(clientX, clientY) {
+
+  const r = joystick.getBoundingClientRect();
+
+  let cx = r.left + r.width/2;
+  let cy = r.top + r.height/2;
+
+  let dx = clientX-cx;
+  let dy = clientY-cy;
+
+  let max = 37;
+  let d = Math.hypot(dx,dy);
+
+  if (d > max) {
+    dx = dx/d*max;
+    dy = dy/d*max;
+  }
+
+  joyX = dx/max;
+  joyY = dy/max;
+
+  stick.style.left = (37+dx) + "px";
+  stick.style.top = (37+dy) + "px";
+}
+
+function joystickReset() {
+
+  touching = false;
 
   joyX = 0;
-
   joyY = 0;
 
-  stick.style.left = "42px";
-
-  stick.style.top = "42px";
-
+  stick.style.left = "37px";
+  stick.style.top = "37px";
 }
 
-
-joystick.addEventListener(
-  "pointerdown",
-  e => {
-
-    e.preventDefault();
-
-    joyActive = true;
-
-    joyPointer = e.pointerId;
-
-    joystick.setPointerCapture(
-      e.pointerId
-    );
-
-    moveJoystick(e);
-
-  }
-);
-
-
-joystick.addEventListener(
-  "pointermove",
-  e => {
-
-    if(
-      e.pointerId === joyPointer
-    ){
-
-      moveJoystick(e);
-
-    }
-
-  }
-);
-
-
-joystick.addEventListener(
-  "pointerup",
-  e => {
-
-    if(
-      e.pointerId === joyPointer
-    ){
-
-      resetJoystick();
-
-    }
-
-  }
-);
-
-
-joystick.addEventListener(
-  "pointercancel",
-  resetJoystick
-);
-
-
-joystick.addEventListener(
-  "lostpointercapture",
-  resetJoystick
-);
-
-
-/* =========================
-   BOOST
-========================= */
-
-
-boostButton.addEventListener(
-  "pointerdown",
-  e => {
-
-    e.preventDefault();
-
-    boostPressed = true;
-
-  }
-);
-
-
-boostButton.addEventListener(
-  "pointerup",
-  e => {
-
-    e.preventDefault();
-
-    boostPressed = false;
-
-  }
-);
-
-
-boostButton.addEventListener(
-  "pointercancel",
-  () => {
-
-    boostPressed = false;
-
-  }
-);
-
-
-/* =========================
-   START
-========================= */
-
-
-play.addEventListener(
-  "click",
-  startGame
-);
-
-
-function startGame(){
-
-  menu.style.display =
-    "none";
-
-  game.style.display =
-    "block";
-
-
-  const name =
-    document
-      .getElementById("nameInput")
-      .value
-      .trim()
-    || "Viki";
-
-
-  playerName.textContent =
-    name;
-
-
-  blueScore = 0;
-
-  orangeScore = 0;
-
-  boost = 100;
-
-
-  updateScore();
-
-  resetPositions();
-
-  running = true;
-
-  requestAnimationFrame(loop);
-
-}
-
-
-/* =========================
-   POSITIONEN
-========================= */
-
-
-function resetPositions(){
-
-  player.x =
-    W * .25;
-
-  player.y =
-    H * .5;
-
-  player.vx = 0;
-
-  player.vy = 0;
-
-
-  bot.x =
-    W * .75;
-
-  bot.y =
-    H * .5;
-
-  bot.vx = 0;
-
-  bot.vy = 0;
-
-
-  ball.x =
-    W * .5;
-
-  ball.y =
-    H * .5;
-
-
-  const direction =
-    Math.random() < .5
-      ? -1
-      : 1;
-
-
-  const angle =
-    Math.random() * .8 - .4;
-
-
-  ball.vx =
-    Math.cos(angle)
-    * 2.2
-    * direction;
-
-
-  ball.vy =
-    Math.sin(angle)
-    * 2.2;
-
-}
-
-
-/* =========================
-   SPIELER
-========================= */
-
-
-function updatePlayer(){
-
-  let dx = 0;
-
-  let dy = 0;
-
-
-  if(
-    keys["w"] ||
-    keys["arrowup"]
-  )
-    dy -= 1;
-
-
-  if(
-    keys["s"] ||
-    keys["arrowdown"]
-  )
-    dy += 1;
-
-
-  if(
-    keys["a"] ||
-    keys["arrowleft"]
-  )
-    dx -= 1;
-
-
-  if(
-    keys["d"] ||
-    keys["arrowright"]
-  )
-    dx += 1;
-
-
-  dx += joyX;
-
-  dy += joyY;
-
-
-  const length =
-    Math.hypot(dx,dy);
-
-
-  if(length > 1){
-
-    dx /= length;
-
-    dy /= length;
-
-  }
-
-
-  let speed = .55;
-
-
-  if(
-    boostPressed &&
-    boost > 0
-  ){
-
-    speed = 1.0;
-
-    boost -= .9;
-
-    if(boost < 0)
-      boost = 0;
-
-  }
-  else{
-
-    boost += .25;
-
-    if(boost > 100)
-      boost = 100;
-
-  }
-
-
-  player.vx +=
-    dx * speed;
-
-  player.vy +=
-    dy * speed;
-
-
-  player.vx *= .82;
-
-  player.vy *= .82;
-
-
-  player.x +=
-    player.vx;
-
-  player.y +=
-    player.vy;
-
-
-  // EXTREM HARTE GRENZE
-  keepInside(player);
-
-}
-
-
-/* =========================
-   BOT
-========================= */
-
-
-function updateBot(){
-
-  let dx =
-    ball.x - bot.x;
-
-  let dy =
-    ball.y - bot.y;
-
-
-  const distance =
-    Math.hypot(dx,dy) || 1;
-
-
-  dx /= distance;
-
-  dy /= distance;
-
-
-  bot.vx +=
-    dx * .13;
-
-  bot.vy +=
-    dy * .13;
-
-
-  const speed =
-    Math.hypot(
-      bot.vx,
-      bot.vy
-    );
-
-
-  const maxSpeed = 3.8;
-
-
-  if(speed > maxSpeed){
-
-    bot.vx =
-      bot.vx /
-      speed *
-      maxSpeed;
-
-    bot.vy =
-      bot.vy /
-      speed *
-      maxSpeed;
-
-  }
-
-
-  bot.vx *= .94;
-
-  bot.vy *= .94;
-
-
-  bot.x += bot.vx;
-
-  bot.y += bot.vy;
-
-
-  keepInside(bot);
-
-}
-
-
-/* =========================
-   HARTE SPIELFELD-GRENZE
-========================= */
-
-
-function keepInside(car){
-
-  const minX =
-    FIELD_MARGIN + car.r;
-
-  const maxX =
-    W - FIELD_MARGIN - car.r;
-
-  const minY =
-    FIELD_MARGIN + car.r;
-
-  const maxY =
-    H - FIELD_MARGIN - car.r;
-
-
-  if(car.x < minX){
-
-    car.x = minX;
-
-    car.vx = 0;
-
-  }
-
-
-  if(car.x > maxX){
-
-    car.x = maxX;
-
-    car.vx = 0;
-
-  }
-
-
-  if(car.y < minY){
-
-    car.y = minY;
-
-    car.vy = 0;
-
-  }
-
-
-  if(car.y > maxY){
-
-    car.y = maxY;
-
-    car.vy = 0;
-
-  }
-
-}
-
-
-/* =========================
-   AUTOS
-========================= */
-
-
-function carCollision(){
-
-  const dx =
-    bot.x - player.x;
-
-  const dy =
-    bot.y - player.y;
-
-
-  const distance =
-    Math.hypot(dx,dy);
-
-
-  const minDistance =
-    bot.r + player.r;
-
-
-  if(
-    distance < minDistance
-  ){
-
-    const d =
-      distance || .01;
-
-
-    const nx =
-      dx / d;
-
-    const ny =
-      dy / d;
-
-
-    const overlap =
-      minDistance - d;
-
-
-    player.x -=
-      nx * overlap / 2;
-
-    player.y -=
-      ny * overlap / 2;
-
-
-    bot.x +=
-      nx * overlap / 2;
-
-    bot.y +=
-      ny * overlap / 2;
-
-
-    player.vx -=
-      nx * .8;
-
-    player.vy -=
-      ny * .8;
-
-
-    bot.vx +=
-      nx * .8;
-
-    bot.vy +=
-      ny * .8;
-
-
-    // Nach Kollision wieder ins Feld
-    keepInside(player);
-
-    keepInside(bot);
-
-  }
-
-}
-
-
-/* =========================
-   BALL
-========================= */
-
-
-function carBall(car){
-
-  const dx =
-    ball.x - car.x;
-
-  const dy =
-    ball.y - car.y;
-
-
-  const distance =
-    Math.hypot(dx,dy);
-
-
-  const minDistance =
-    ball.r + car.r;
-
-
-  if(
-    distance < minDistance
-  ){
-
-    const d =
-      distance || .01;
-
-
-    const nx =
-      dx / d;
-
-    const ny =
-      dy / d;
-
-
-    const overlap =
-      minDistance - d;
-
-
-    ball.x +=
-      nx * overlap;
-
-    ball.y +=
-      ny * overlap;
-
-
-    ball.vx +=
-      nx * 2.8;
-
-    ball.vy +=
-      ny * 2.8;
-
-
-    ball.vx +=
-      car.vx * .45;
-
-    ball.vy +=
-      car.vy * .45;
-
-
-    const speed =
-      Math.hypot(
-        ball.vx,
-        ball.vy
-      );
-
-
-    if(speed > 12){
-
-      ball.vx =
-        ball.vx /
-        speed *
-        12;
-
-      ball.vy =
-        ball.vy /
-        speed *
-        12;
-
-    }
-
-  }
-
-}
-
-
-function updateBall(){
-
-  ball.x +=
-    ball.vx;
-
-  ball.y +=
-    ball.vy;
-
-
-  ball.vx *= .992;
-
-  ball.vy *= .992;
-
-
-  const margin = 20;
-
-
-  if(
-    ball.y - ball.r < margin
-  ){
-
-    ball.y =
-      margin + ball.r;
-
-    ball.vy =
-      Math.abs(
-        ball.vy
-      ) * .9;
-
-  }
-
-
-  if(
-    ball.y + ball.r >
-    H - margin
-  ){
-
-    ball.y =
-      H - margin - ball.r;
-
-    ball.vy =
-      -Math.abs(
-        ball.vy
-      ) * .9;
-
-  }
-
-
-  const goalHeight =
-    H * .34;
-
-
-  const goalTop =
-    (H - goalHeight) / 2;
-
-
-  const goalBottom =
-    goalTop + goalHeight;
-
-
-  if(
-    ball.x - ball.r < 0
-  ){
-
-    if(
-      ball.y > goalTop &&
-      ball.y < goalBottom
-    ){
-
-      scoreGoal("orange");
-
-      return;
-
-    }
-
-
-    ball.x =
-      margin + ball.r;
-
-    ball.vx =
-      Math.abs(ball.vx) * .9;
-
-  }
-
-
-  if(
-    ball.x + ball.r > W
-  ){
-
-    if(
-      ball.y > goalTop &&
-      ball.y < goalBottom
-    ){
-
-      scoreGoal("blue");
-
-      return;
-
-    }
-
-
-    ball.x =
-      W - margin - ball.r;
-
-    ball.vx =
-      -Math.abs(ball.vx) * .9;
-
-  }
-
-}
-
-
-/* =========================
-   TOR
-========================= */
-
-
-function scoreGoal(team){
-
-  if(team === "blue")
-    blueScore++;
-  else
-    orangeScore++;
-
-
-  updateScore();
-
-
-  goalText.style.opacity =
-    "1";
-
-  goalText.style.transform =
-    "translate(-50%,-50%) scale(1)";
-
-
-  clearTimeout(goalTimer);
-
-
-  goalTimer =
-    setTimeout(() => {
-
-      goalText.style.opacity =
-        "0";
-
-      goalText.style.transform =
-        "translate(-50%,-50%) scale(.5)";
-
-    },900);
-
-
-  resetPositions();
-
-}
-
-
-/* =========================
-   SCORE
-========================= */
-
-
-function updateScore(){
-
-  scoreText.textContent =
-    "🔵 " +
-    blueScore +
-    " : " +
-    orangeScore +
-    " 🟠";
-
-}
-
-
-/* =========================
-   SPIELFELD
-========================= */
-
-
-function drawField(){
-
-  ctx.fillStyle =
-    "#16803a";
-
-  ctx.fillRect(
-    0,
-    0,
-    W,
-    H
-  );
-
-
-  ctx.strokeStyle =
-    "#ffffff88";
-
-  ctx.lineWidth = 4;
-
-
-  ctx.strokeRect(
-    FIELD_MARGIN,
-    FIELD_MARGIN,
-    W - FIELD_MARGIN * 2,
-    H - FIELD_MARGIN * 2
-  );
-
-
-  ctx.beginPath();
-
-  ctx.moveTo(
-    W / 2,
-    FIELD_MARGIN
-  );
-
-  ctx.lineTo(
-    W / 2,
-    H - FIELD_MARGIN
-  );
-
-  ctx.stroke();
-
-
-  ctx.beginPath();
-
-  ctx.arc(
-    W / 2,
-    H / 2,
-    Math.min(W,H) * .13,
-    0,
-    Math.PI * 2
-  );
-
-  ctx.stroke();
-
-
-  const goalHeight =
-    H * .34;
-
-
-  const top =
-    (H - goalHeight) / 2;
-
-
-  ctx.fillStyle =
-    "#2495ff55";
-
-  ctx.fillRect(
-    0,
-    top,
-    45,
-    goalHeight
-  );
-
-
-  ctx.fillStyle =
-    "#ff8a2255";
-
-  ctx.fillRect(
-    W - 45,
-    top,
-    45,
-    goalHeight
-  );
-
-}
-
-
-/* =========================
-   AUTO ZEICHNEN
-========================= */
-
-
-function drawCar(car,color){
-
-  ctx.save();
-
-
-  ctx.translate(
-    car.x,
-    car.y
-  );
-
-
-  const angle =
-    Math.atan2(
-      car.vy,
-      car.vx
-    );
-
-
-  if(
-    Math.hypot(
-      car.vx,
-      car.vy
-    ) > .05
-  ){
-
-    ctx.rotate(angle);
-
-  }
-
-
-  ctx.fillStyle =
-    "#111";
-
-
-  ctx.fillRect(
-    -28,
-    -18,
-    56,
-    36
-  );
-
-
-  ctx.fillStyle =
-    color;
-
-
-  ctx.beginPath();
-
-  ctx.roundRect(
-    -25,
-    -15,
-    50,
-    30,
-    9
-  );
-
-  ctx.fill();
-
-
-  ctx.fillStyle =
-    "#dff6ff";
-
-
-  ctx.fillRect(
-    2,
-    -11,
-    16,
-    22
-  );
-
-
-  ctx.fillStyle =
-    "#111";
-
-
-  ctx.fillRect(
-    -24,
-    -20,
-    13,
-    7
-  );
-
-  ctx.fillRect(
-    -24,
-    13,
-    13,
-    7
-  );
-
-  ctx.fillRect(
-    12,
-    -20,
-    13,
-    7
-  );
-
-  ctx.fillRect(
-    12,
-    13,
-    13,
-    7
-  );
-
-
-  ctx.restore();
-
-}
-
-
-/* =========================
-   BALL ZEICHNEN
-========================= */
-
-
-function drawBall(){
-
-  ctx.beginPath();
-
-
-  ctx.arc(
-    ball.x,
-    ball.y,
-    ball.r,
-    0,
-    Math.PI * 2
-  );
-
-
-  ctx.fillStyle =
-    "white";
-
-  ctx.fill();
-
-
-  ctx.strokeStyle =
-    "#ddd";
-
-  ctx.lineWidth = 2;
-
-  ctx.stroke();
-
-
-  ctx.fillStyle =
-    "#222";
-
-
-  ctx.beginPath();
-
-
-  ctx.arc(
-    ball.x,
-    ball.y,
-    5,
-    0,
-    Math.PI * 2
-  );
-
-
-  ctx.fill();
-
-}
-
-
-/* =========================
-   UI
-========================= */
-
-
-function updateUI(){
-
-  boostFill.style.width =
-    boost + "%";
-
-
-  boostText.textContent =
-    "BOOST: " +
-    Math.round(boost) +
-    "%";
-
-}
-
-
-/* =========================
-   GAME LOOP
-========================= */
-
-
-function loop(){
-
-  if(!running)
-    return;
-
-
-  updatePlayer();
-
-  updateBot();
-
-  carCollision();
-
-  carBall(player);
-
-  carBall(bot);
+joystick.addEventListener("pointerdown", e => {
+  touching = true;
+  joystickMove(e.clientX,e.clientY);
+});
+
+joystick.addEventListener("pointermove", e => {
+  if (touching) joystickMove(e.clientX,e.clientY);
+});
+
+joystick.addEventListener("pointerup", joystickReset);
+joystick.addEventListener("pointercancel", joystickReset);
+joystick.addEventListener("pointerleave", e => {
+  if (touching) joystickMove(e.clientX,e.clientY);
+});
+
+shoot.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  playerKick();
+});
+
+/* Hauptschleife */
+
+function loop() {
+
+  movePlayer();
+  moveBot();
 
   updateBall();
 
+  /* Ballkontakt mit Viki */
+  let dp = Math.hypot(ballPos.x-p.x,ballPos.y-p.y);
 
-  // Sicherheit: Spieler auch nach
-  // allen Kollisionen im Feld halten
-  keepInside(player);
+  if (dp < 32) {
 
-  keepInside(bot);
+    let dx = ballPos.x-p.x;
+    let dy = ballPos.y-p.y;
+    let d = Math.max(1,Math.hypot(dx,dy));
 
+    ballPos.x = p.x + dx/d*33;
+    ballPos.y = p.y + dy/d*33;
 
-  drawField();
+    if (Math.abs(joyX)+Math.abs(joyY) > .1) {
+      ballVel.x = joyX*4;
+      ballVel.y = joyY*4;
+    }
+  }
 
-  drawCar(
-    player,
-    "#2495ff"
-  );
+  /* Ballkontakt mit Bot */
+  let db = Math.hypot(ballPos.x-b.x,ballPos.y-b.y);
 
-  drawCar(
-    bot,
-    "#ff8a22"
-  );
+  if (db < 32) {
+    botKick();
+  }
 
-  drawBall();
-
-  updateUI();
-
+  draw();
 
   requestAnimationFrame(loop);
-
 }
 
-
-/* =========================
-   MENÜ
-========================= */
-
-
-back.addEventListener(
-  "click",
-  () => {
-
-    running = false;
-
-    game.style.display =
-      "none";
-
-    menu.style.display =
-      "flex";
-
-    resetJoystick();
-
-    boostPressed = false;
-
-  }
-);
-
-
-/* =========================
-   IPAD / TOUCH
-========================= */
-
-
-document.addEventListener(
-  "touchmove",
-  e => {
-
-    if(game.contains(e.target)){
-
-      e.preventDefault();
-
-    }
-
-  },
-  {
-    passive:false
-  }
-);
-
-
-document.addEventListener(
-  "gesturestart",
-  e => {
-
-    e.preventDefault();
-
-  },
-  {
-    passive:false
-  }
-);
-
-
-/* START */
-
-resize();
-
+draw();
+loop();
 </script>
 
 </body>
